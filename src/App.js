@@ -6,8 +6,21 @@ import Deployments from "./list/deployment";
 import Pods from "./list/pod";
 
 
-class Demo extends React.Component {
+class App extends React.Component {
+
+    listen_ws() {
+        const conn = new WebSocket("ws://127.0.0.1:8080/ws");
+        conn.onclose = function (evt) {
+            console.log('关闭连接');
+        }
+        conn.onmessage = function (evt) {
+            console.log('接到消息', evt.data);
+        }
+    }
+
+
     render() {
+        this.listen_ws()
         return (<Router>
             <Routes>
                 <Route path="/" element={<Pods/>}/>
@@ -18,4 +31,4 @@ class Demo extends React.Component {
     }
 }
 
-export default Demo;
+export default App;
