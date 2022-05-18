@@ -43,11 +43,17 @@ class Deployments extends React.Component {
         const columns = [
             {
                 title: '名称', dataIndex: 'name', render: (text) => {
-                    return <a href={"ss"}>{text}</a>
+                    return <a href={text}>{text}</a>
                 },
             },
             {title: '名称空间', dataIndex: 'name_space'},
+            {title: '副本数', dataIndex: 'replicas'},
+            {title: '镜像', dataIndex: 'images'},
             {title: '创建时间', dataIndex: 'create_time'},
+            {title: '是否完成', dataIndex: 'is_complete'},
+            {title: 'Message', dataIndex: 'message'},
+            {title: '创建时间', dataIndex: 'create_time'},
+
         ];
         if (!this.state.isLoading) {
             return (
