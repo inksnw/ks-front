@@ -8,26 +8,47 @@ import Pods from "./list/pod";
 
 class App extends React.Component {
 
-    listen_ws() {
+    state = {
+        deployList: {},
+        podList: {},
+        connected: false
+    }
+
+
+    listen_ws = () => {
+        if (this.state.connected) {
+            return
+        }
+
         const conn = new WebSocket("ws://127.0.0.1:8080/ws");
         conn.onclose = function (evt) {
             console.log('关闭连接');
         }
-        conn.onmessage = function (evt) {
-            console.log('接到消息', evt.data);
+        conn.onmessage = (evt) => {
+            if (evt.data === "ping") {
+                return
+            }
+            this.setState(
+                {
+                    deployList: evt.data,
+                    connected: true
+                }
+            )
         }
     }
 
 
     render() {
         this.listen_ws()
-        return (<Router>
-            <Routes>
-                <Route path="/" element={<Pods/>}/>
-                <Route path="/pods" element={<Pods/>}/>
-                <Route path="/deployments" element={<Deployments/>}/>
-            </Routes>
-        </Router>)
+
+        return (
+            <Router>
+                <Routes>
+                    <Route path="/" element={<Pods/>}/>
+                    <Route path="/pods" element={<Pods/>}/>
+                    <Route path="/deployments" element={<Deployments deployList={this.state.deployList}/>}/>
+                </Routes>
+            </Router>)
     }
 }
 

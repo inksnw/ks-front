@@ -1,45 +1,37 @@
-import React from 'react';
 import {Button, Descriptions, Layout, PageHeader, Table} from "antd";
-import {getSider} from "../common"
+import {getSider} from "../common";
+import React, {useEffect, useState} from "react";
 import {Content} from "antd/es/layout/layout";
 import axios from "axios";
 
+export default function Deployments(props) {
 
-class Deployments extends React.Component {
-    state = {
-        data: [],
-        isLoading: false,
-        visible: false,
-    };
+    const [data, setdata] = useState([]);
+    const [isLoading, setisLoading] = useState(false);
+    const [requested, setrequested] = useState(false);
 
-    componentDidMount() {
-        const url = 'http://127.0.0.1:8080/api/v1/deployments'
-        axios.get(url).then(response => {
-            this.setState({
-                data: response.data.items,
-                isLoading: true
+    useEffect(() => {
+        if (!requested) {
+            const url = 'http://127.0.0.1:8080/api/v1/deployments'
+            axios.get(url).then(response => {
+                setdata(response.data.items)
+                setisLoading(true)
+            }).catch((error) => {
+                console.log(error)
+                setisLoading(false)
             })
-        }).catch((error) => {
-            console.log(error)
-            this.setState({
-                data: [], isLoading: false
-            },)
-        })
-    }
+            setrequested(true)
+        }
+
+        if (Object.keys(props.deployList).length !== 0) {
+            const obj = JSON.parse(props.deployList);
+            setdata(obj.items)
+        }
+
+    }, [props, requested]);
 
 
-    render() {
-        return (
-            <Layout>
-                {getSider()}
-                {this.renderContent()}
-            </Layout>
-        )
-
-    }
-
-
-    renderContent() {
+    const renderContent = () => {
         const columns = [
             {
                 title: '名称', dataIndex: 'name', render: (text) => {
@@ -55,13 +47,14 @@ class Deployments extends React.Component {
             {title: '创建时间', dataIndex: 'create_time'},
 
         ];
-        if (!this.state.isLoading) {
+        if (!isLoading) {
             return (
                 <Content className="site-layout-background">
                     <div><Table> </Table></div>
                 </Content>
             )
         }
+
         return (
             <Content className="site-layout-background">
                 <PageHeader ghost={false} title="信息" extra={[<Button key="3">创建虚拟机</Button>]}>
@@ -70,11 +63,15 @@ class Deployments extends React.Component {
                         <Descriptions.Item label="Created">Lili Qu</Descriptions.Item>
                     </Descriptions>
                 </PageHeader>
-                <Table dataSource={this.state.data} columns={columns}>
+                <Table dataSource={data} columns={columns}>
                 </Table>
             </Content>
         )
     }
+    return (
+        <Layout>
+            {getSider()}
+            {renderContent()}
+        </Layout>
+    )
 }
-
-export default Deployments;
