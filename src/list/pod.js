@@ -11,10 +11,13 @@ export default function Pods(props) {
     const [requested, setrequested] = useState(false);
 
     function fetch(ns) {
+        let url = ""
         if (typeof (ns) === "undefined" || ns === null) {
-            ns = ""
+            url = 'http://127.0.0.1:8080/api/v1/pods'
+        } else {
+            url = 'http://127.0.0.1:8080/api/v1/pods?'.concat('ns=', ns)
         }
-        const url = 'http://127.0.0.1:8080/api/v1/pods?'.concat('ns=', ns)
+
         axios.get(url).then(response => {
             setdata(response.data.items)
             setisLoading(true)
@@ -40,6 +43,7 @@ export default function Pods(props) {
     }, [props, requested]);
 
     const handleTableChange = (pagination, filters, sorter) => {
+
         fetch(filters.name_space);
     }
 
@@ -52,7 +56,7 @@ export default function Pods(props) {
                 },
             },
             {
-                title: '名称空间', dataIndex: 'name_space', filters: getNs(), filterMultiple: false
+                title: '名称空间', dataIndex: 'name_space', filters: getNs(), filterMultiple: false, sorter: true
             },
             {title: '镜像', dataIndex: 'images'},
             {title: 'node_name', dataIndex: 'node_name'},
