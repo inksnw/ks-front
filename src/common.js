@@ -3,19 +3,22 @@ import React from 'react';
 import Sider from "antd/es/layout/Sider";
 import {Link} from "react-router-dom";
 
-function getItem(label, key, children, type) {
+function getItem(label, key, children) {
     return {
         key,
         children,
         label,
-        type,
     };
 }
 
 function getSider() {
     const items2 = [
-        getItem(<Link to="/pods"> pods </Link>, 'sub1'),
-        getItem(<Link to="/deployments"> deployment </Link>, 'sub2'),
+
+        getItem(<Link to="/"> 工作负载 </Link>, 'sub1',
+            [
+                getItem(<Link to="/pods"> pods </Link>, 'sub11'),
+                getItem(<Link to="/deployments"> deployment </Link>, 'sub12'),
+            ]),
     ];
     return (<Sider width={150}>
         <Menu mode="inline"

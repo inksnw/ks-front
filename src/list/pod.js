@@ -17,7 +17,14 @@ class Pods extends React.Component {
 
 
     componentDidMount() {
-        const url = 'http://127.0.0.1:8080/api/v1/pods'
+        this.fetch();
+    }
+
+    fetch(ns) {
+        if (typeof (ns) === "undefined" || ns === null) {
+            ns = ""
+        }
+        const url = 'http://127.0.0.1:8080/api/v1/pods?'.concat('ns=', ns)
         axios.get(url).then(response => {
             this.setState({
                 data: response.data.items,
@@ -33,10 +40,15 @@ class Pods extends React.Component {
 
     render() {
         return (<Layout>
+
             {getSider()}
             {this.renderContent()}
         </Layout>);
     }
+
+    handleTableChange = (pagination, filters, sorter) => {
+        this.fetch(filters.name_space);
+    };
 
     renderContent() {
         const columns = [
@@ -45,7 +57,9 @@ class Pods extends React.Component {
                     return <a href={"ss"}>{text}</a>
                 },
             },
-            {title: '名称空间', dataIndex: 'name_space'},
+            {
+                title: '名称空间', dataIndex: 'name_space', filters: this.getFilters(), filterMultiple: false
+            },
             {title: '创建时间', dataIndex: 'create_time'},
             {title: '状态', dataIndex: 'status'}
         ];
@@ -57,17 +71,40 @@ class Pods extends React.Component {
             )
         }
         return (
+
             <Content className="site-layout-background">
+
                 <PageHeader ghost={false} title="信息" extra={[<Button key="3">创建虚拟机</Button>]}>
                     <Descriptions size="small" column={3}>
                         <Descriptions.Item label="Created">Lili Qu</Descriptions.Item>
                         <Descriptions.Item label="Created">Lili Qu</Descriptions.Item>
                     </Descriptions>
                 </PageHeader>
-                <Table dataSource={this.state.data} columns={columns}>
+                <Table
+                    dataSource={this.state.data}
+                    columns={columns}
+                    onChange={this.handleTableChange}
+                >
                 </Table>
             </Content>
         )
+    }
+
+    getFilters() {
+        const url = 'http://127.0.0.1:8080/api/v1/namespaces'
+        const rv = [];
+        axios.get(url).then(response => {
+            for (const rvKey in response.data.items) {
+                let key = response.data.items[rvKey].name
+                let cardNumObj = {text: key, value: key};
+                rv.push(cardNumObj)
+            }
+            return rv
+        }).catch((error) => {
+            console.log(error)
+            return []
+        })
+        return rv
     }
 }
 
