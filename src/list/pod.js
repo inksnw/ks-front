@@ -54,8 +54,12 @@ export default function Pods(props) {
             {
                 title: '名称空间', dataIndex: 'name_space', filters: getNs(), filterMultiple: false
             },
+            {title: '镜像', dataIndex: 'images'},
+            {title: 'node_name', dataIndex: 'node_name'},
+            {title: 'IP', dataIndex: 'IP'},
+            {title: '状态', dataIndex: 'phase'},
+            {title: 'is_ready', dataIndex: 'is_ready'},
             {title: '创建时间', dataIndex: 'create_time'},
-            {title: '状态', dataIndex: 'status'}
         ];
         if (!isLoading) {
             return (<Content className="site-layout-background">

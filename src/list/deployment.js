@@ -27,13 +27,13 @@ export default function Deployments(props) {
 
     useEffect(() => {
         if (!requested) {
-            fetch();
+            fetch("");
         }
 
         if (Object.keys(props.updateMsg).length !== 0) {
             // const obj = JSON.parse(props.deployList);
             // setdata(obj.items)
-            fetch();
+            fetch("");
         }
 
     }, [props, requested]);
@@ -49,7 +49,6 @@ export default function Deployments(props) {
             {title: '名称空间', dataIndex: 'name_space', filters: getNs(), filterMultiple: false},
             {title: '副本数', dataIndex: 'replicas'},
             {title: '镜像', dataIndex: 'images'},
-            {title: '创建时间', dataIndex: 'create_time'},
             {title: '是否完成', dataIndex: 'is_complete'},
             {title: 'Message', dataIndex: 'message'},
             {title: '创建时间', dataIndex: 'create_time'},
