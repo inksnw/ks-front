@@ -1,56 +1,50 @@
-import React from 'react';
-import 'antd/dist/antd.min.css';
-import '../index.css';
-import axios from "axios";
-import {Button, Descriptions, Layout, PageHeader, Table} from 'antd';
+import {Button, Descriptions, Layout, PageHeader, Table} from "antd";
+import {getNs, getSider} from "../common";
+import React, {useEffect, useState} from "react";
 import {Content} from "antd/es/layout/layout";
-import {getSider} from "../common";
+import axios from "axios";
 
+export default function Pods(props) {
 
-class Pods extends React.Component {
+    const [data, setdata] = useState([]);
+    const [isLoading, setisLoading] = useState(false);
+    const [requested, setrequested] = useState(false);
 
-    state = {
-        data: [],
-        isLoading: false,
-        visible: false,
-    };
-
-
-    componentDidMount() {
-        this.fetch();
-    }
-
-    fetch(ns) {
+    function fetch(ns) {
         if (typeof (ns) === "undefined" || ns === null) {
             ns = ""
         }
         const url = 'http://127.0.0.1:8080/api/v1/pods?'.concat('ns=', ns)
         axios.get(url).then(response => {
-            this.setState({
-                data: response.data.items,
-                isLoading: true
-            })
+            setdata(response.data.items)
+            setisLoading(true)
         }).catch((error) => {
             console.log(error)
-            this.setState({
-                data: [], isLoading: false
-            },)
+            setisLoading(false)
         })
+        setrequested(true)
     }
 
-    render() {
-        return (<Layout>
+    useEffect(() => {
 
-            {getSider()}
-            {this.renderContent()}
-        </Layout>);
+        if (!requested) {
+            fetch("");
+        }
+
+        if (Object.keys(props.updateMsg).length !== 0) {
+            // const obj = JSON.parse(props.deployList);
+            // setdata(obj.items)
+            fetch("");
+        }
+
+    }, [props, requested]);
+
+    const handleTableChange = (pagination, filters, sorter) => {
+        fetch(filters.name_space);
     }
 
-    handleTableChange = (pagination, filters, sorter) => {
-        this.fetch(filters.name_space);
-    };
 
-    renderContent() {
+    const renderContent = () => {
         const columns = [
             {
                 title: '名称', dataIndex: 'name', render: (text) => {
@@ -58,54 +52,32 @@ class Pods extends React.Component {
                 },
             },
             {
-                title: '名称空间', dataIndex: 'name_space', filters: this.getFilters(), filterMultiple: false
+                title: '名称空间', dataIndex: 'name_space', filters: getNs(), filterMultiple: false
             },
             {title: '创建时间', dataIndex: 'create_time'},
             {title: '状态', dataIndex: 'status'}
         ];
-        if (!this.state.isLoading) {
-            return (
-                <Content className="site-layout-background">
-                    <div><Table> </Table></div>
-                </Content>
-            )
+        if (!isLoading) {
+            return (<Content className="site-layout-background">
+                <div><Table> </Table></div>
+            </Content>)
         }
-        return (
 
-            <Content className="site-layout-background">
-
-                <PageHeader ghost={false} title="信息" extra={[<Button key="3">创建虚拟机</Button>]}>
-                    <Descriptions size="small" column={3}>
-                        <Descriptions.Item label="Created">Lili Qu</Descriptions.Item>
-                        <Descriptions.Item label="Created">Lili Qu</Descriptions.Item>
-                    </Descriptions>
-                </PageHeader>
-                <Table
-                    dataSource={this.state.data}
-                    columns={columns}
-                    onChange={this.handleTableChange}
-                >
-                </Table>
-            </Content>
-        )
+        return (<Content className="site-layout-background">
+            <PageHeader ghost={false} title="信息" extra={[<Button key="3">创建虚拟机</Button>]}>
+                <Descriptions size="small" column={3}>
+                    <Descriptions.Item label="Created">Lili Qu</Descriptions.Item>
+                    <Descriptions.Item label="Created">Lili Qu</Descriptions.Item>
+                </Descriptions>
+            </PageHeader>
+            <Table dataSource={data} columns={columns} onChange={handleTableChange}>
+            </Table>
+        </Content>)
     }
 
-    getFilters() {
-        const url = 'http://127.0.0.1:8080/api/v1/namespaces'
-        const rv = [];
-        axios.get(url).then(response => {
-            for (const rvKey in response.data.items) {
-                let key = response.data.items[rvKey].name
-                let cardNumObj = {text: key, value: key};
-                rv.push(cardNumObj)
-            }
-            return rv
-        }).catch((error) => {
-            console.log(error)
-            return []
-        })
-        return rv
-    }
+
+    return (<Layout>
+        {getSider()}
+        {renderContent()}
+    </Layout>)
 }
-
-export default Pods;

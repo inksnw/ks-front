@@ -1,5 +1,5 @@
 import {Button, Descriptions, Layout, PageHeader, Table} from "antd";
-import {getSider} from "../common";
+import {getNs, getSider} from "../common";
 import React, {useEffect, useState} from "react";
 import {Content} from "antd/es/layout/layout";
 import axios from "axios";
@@ -10,24 +10,27 @@ export default function Deployments(props) {
     const [isLoading, setisLoading] = useState(false);
     const [requested, setrequested] = useState(false);
 
-    useEffect(() => {
-        function fetch() {
-            const url = 'http://127.0.0.1:8080/api/v1/deployments'
-            axios.get(url).then(response => {
-                setdata(response.data.items)
-                setisLoading(true)
-            }).catch((error) => {
-                console.log(error)
-                setisLoading(false)
-            })
-            setrequested(true)
-        }
+    function fetch(ns) {
+        const url = 'http://127.0.0.1:8080/api/v1/deployments?'.concat('ns=', ns)
+        axios.get(url).then(response => {
+            setdata(response.data.items)
+            setisLoading(true)
+        }).catch((error) => {
+            console.log(error)
+            setisLoading(false)
+        })
+        setrequested(true)
+    }
+    const handleTableChange = (pagination, filters, sorter) => {
+        fetch(filters.name_space);
+    }
 
+    useEffect(() => {
         if (!requested) {
             fetch();
         }
 
-        if (Object.keys(props.deployList).length !== 0) {
+        if (Object.keys(props.updateMsg).length !== 0) {
             // const obj = JSON.parse(props.deployList);
             // setdata(obj.items)
             fetch();
@@ -43,7 +46,7 @@ export default function Deployments(props) {
                     return <a href={text}>{text}</a>
                 },
             },
-            {title: '名称空间', dataIndex: 'name_space'},
+            {title: '名称空间', dataIndex: 'name_space', filters: getNs(), filterMultiple: false},
             {title: '副本数', dataIndex: 'replicas'},
             {title: '镜像', dataIndex: 'images'},
             {title: '创建时间', dataIndex: 'create_time'},
@@ -68,7 +71,7 @@ export default function Deployments(props) {
                         <Descriptions.Item label="Created">Lili Qu</Descriptions.Item>
                     </Descriptions>
                 </PageHeader>
-                <Table dataSource={data} columns={columns}>
+                <Table dataSource={data} columns={columns} onChange={handleTableChange}>
                 </Table>
             </Content>
         )

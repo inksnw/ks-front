@@ -2,6 +2,7 @@ import {Menu} from "antd";
 import React from 'react';
 import Sider from "antd/es/layout/Sider";
 import {Link} from "react-router-dom";
+import axios from "axios";
 
 function getItem(label, key, children) {
     return {
@@ -29,5 +30,21 @@ function getSider() {
     </Sider>);
 }
 
+function getNs() {
+    const url = 'http://127.0.0.1:8080/api/v1/namespaces'
+    const rv = [];
+    axios.get(url).then(response => {
+        for (const rvKey in response.data.items) {
+            let key = response.data.items[rvKey].name
+            let cardNumObj = {text: key, value: key};
+            rv.push(cardNumObj)
+        }
+        return rv
+    }).catch((error) => {
+        console.log(error)
+        return []
+    })
+    return rv
+}
 
-export {getItem, getSider}
+export {getItem, getSider, getNs}

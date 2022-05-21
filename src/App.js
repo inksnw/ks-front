@@ -10,7 +10,6 @@ class App extends React.Component {
 
     state = {
         data: {},
-        podList: {},
         connected: false
     }
 
@@ -29,6 +28,7 @@ class App extends React.Component {
                 return
             }
             console.log("接到ws消息: ", evt.data)
+            // const obj = JSON.parse(props.deployList);
             this.setState(
                 {
                     data: evt.data,
@@ -45,9 +45,9 @@ class App extends React.Component {
         return (
             <Router>
                 <Routes>
-                    <Route path="/" element={<Pods/>}/>
-                    <Route path="/pods" element={<Pods/>}/>
-                    <Route path="/deployments" element={<Deployments deployList={this.state.data}/>}/>
+                    <Route path="/" element={<Pods updateMsg={this.state.data}/>}/>
+                    <Route path="/pods" element={<Pods updateMsg={this.state.data}/>}/>
+                    <Route path="/deployments" element={<Deployments updateMsg={this.state.data}/>}/>
                 </Routes>
             </Router>)
     }
