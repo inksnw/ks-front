@@ -9,7 +9,7 @@ import Pods from "./list/pod";
 class App extends React.Component {
 
     state = {
-        deployList: {},
+        data: {},
         podList: {},
         connected: false
     }
@@ -28,9 +28,10 @@ class App extends React.Component {
             if (evt.data === "ping") {
                 return
             }
+            console.log("接到ws消息: ", evt.data)
             this.setState(
                 {
-                    deployList: evt.data,
+                    data: evt.data,
                     connected: true
                 }
             )
@@ -46,7 +47,7 @@ class App extends React.Component {
                 <Routes>
                     <Route path="/" element={<Pods/>}/>
                     <Route path="/pods" element={<Pods/>}/>
-                    <Route path="/deployments" element={<Deployments deployList={this.state.deployList}/>}/>
+                    <Route path="/deployments" element={<Deployments deployList={this.state.data}/>}/>
                 </Routes>
             </Router>)
     }

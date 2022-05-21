@@ -11,7 +11,7 @@ export default function Deployments(props) {
     const [requested, setrequested] = useState(false);
 
     useEffect(() => {
-        if (!requested) {
+        function fetch() {
             const url = 'http://127.0.0.1:8080/api/v1/deployments'
             axios.get(url).then(response => {
                 setdata(response.data.items)
@@ -23,9 +23,14 @@ export default function Deployments(props) {
             setrequested(true)
         }
 
+        if (!requested) {
+            fetch();
+        }
+
         if (Object.keys(props.deployList).length !== 0) {
-            const obj = JSON.parse(props.deployList);
-            setdata(obj.items)
+            // const obj = JSON.parse(props.deployList);
+            // setdata(obj.items)
+            fetch();
         }
 
     }, [props, requested]);
