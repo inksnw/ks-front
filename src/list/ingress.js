@@ -4,24 +4,13 @@ import React, {useEffect, useState} from "react";
 import {Content} from "antd/es/layout/layout";
 import axios from "axios";
 
-const options = [];
-for (let i = 0; i < 2; i++) {
-    const value = `${i.toString(36)}${i}`;
-    options.push({
-        value
-    });
-
-}
-console.log("正确的", options)
-let rv = []
-getNs(rv)
-console.log("错误的",rv )
 export default function Ingress(props) {
 
     const [data, setdata] = useState([]);
     const [isLoading, setisLoading] = useState(false);
     const [requested, setrequested] = useState(false);
     const [visible, setVisible] = useState(false);
+
 
     function fetch(ns) {
 
@@ -59,9 +48,6 @@ export default function Ingress(props) {
 
 
     const renderContent = () => {
-        let rv = []
-        getNs(rv)
-
         const columns = [
             {
                 title: '名称', dataIndex: 'name', render: (text) => {
@@ -69,7 +55,7 @@ export default function Ingress(props) {
                 },
             },
             {
-                title: '名称空间', dataIndex: 'name_space', filters: rv, filterMultiple: false, sorter: true
+                title: '名称空间', dataIndex: 'name_space', filters: getNs(), filterMultiple: false, sorter: true
             },
             {title: '创建时间', dataIndex: 'create_time'},
 
@@ -81,6 +67,7 @@ export default function Ingress(props) {
                 </Content>
             )
         }
+
 
         return (
             <Content className="site-layout-background">
@@ -109,13 +96,17 @@ export default function Ingress(props) {
                                 >
                                     <Input placeholder="ingress名称"/>
                                 </Form.Item>
+
                                 <Select
-                                    style={{display: 'inline-flex', width: 'calc(45% - 4px)'}}
-                                    dropdownMatchSelectWidth={false}
+                                    style={{display: 'inline-flex', width: 'calc(55% - 12px)'}}
+                                    name="名称"
                                     placement="bottomLeft"
-                                    options={rv}
                                 >
+                                    {/*todo 搞不懂怎么远程获取了*/}
+                                    <Select.Option value="default">default</Select.Option>
+
                                 </Select>
+
                             </Form.Item>
 
                             <p>some contents...</p>

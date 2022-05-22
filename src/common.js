@@ -31,18 +31,21 @@ function getSider() {
     </Sider>);
 }
 
-function getNs(rv) {
+function getNs() {
     const url = 'http://127.0.0.1:8080/api/v1/namespaces'
-
+    let rv = []
     axios.get(url).then(response => {
         for (const rvKey in response.data.items) {
             let key = response.data.items[rvKey].name
             rv.push({value: key, text: key})
         }
+        return rv
+
     }).catch((error) => {
         console.log(error)
+        return []
     })
-
+    return rv
 }
 
 export {getItem, getSider, getNs}
