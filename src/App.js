@@ -4,6 +4,7 @@ import './index.css';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import Deployments from "./list/deployment";
 import Pods from "./list/pod";
+import Ingress from "./list/ingress";
 
 
 class App extends React.Component {
@@ -48,6 +49,7 @@ class App extends React.Component {
                     <Route path="/" element={<Pods updateMsg={this.state.data}/>}/>
                     <Route path="/pods" element={<Pods updateMsg={this.state.data}/>}/>
                     <Route path="/deployments" element={<Deployments updateMsg={this.state.data}/>}/>
+                    <Route path="/ingress" element={<Ingress updateMsg={this.state.data}/>}/>
                 </Routes>
             </Router>)
     }

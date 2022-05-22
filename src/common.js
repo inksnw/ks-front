@@ -20,6 +20,7 @@ function getSider() {
                 getItem(<Link to="/pods"> pods </Link>, 'sub11'),
                 getItem(<Link to="/deployments"> deployment </Link>, 'sub12'),
             ]),
+        getItem(<Link to="/ingress"> ingress </Link>, 'sub2')
     ];
     return (<Sider width={150}>
         <Menu mode="inline"
