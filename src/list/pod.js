@@ -49,6 +49,8 @@ export default function Pods(props) {
 
 
     const renderContent = () => {
+        let rv= []
+        getNs(rv)
         const columns = [
             {
                 title: '名称', dataIndex: 'name', render: (text) => {
@@ -56,7 +58,7 @@ export default function Pods(props) {
                 },
             },
             {
-                title: '名称空间', dataIndex: 'name_space', filters: getNs(), filterMultiple: false, sorter: true
+                title: '名称空间', dataIndex: 'name_space', filters: rv, filterMultiple: false, sorter: true
             },
             {title: '镜像', dataIndex: 'images'},
             {title: 'node_name', dataIndex: 'node_name'},

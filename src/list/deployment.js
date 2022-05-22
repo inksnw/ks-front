@@ -48,13 +48,15 @@ export default function Deployments(props) {
 
 
     const renderContent = () => {
+        let rv =[]
+        getNs(rv)
         const columns = [
             {
                 title: '名称', dataIndex: 'name', render: (text) => {
                     return <a href={text}>{text}</a>
                 },
             },
-            {title: '名称空间', dataIndex: 'name_space', filters: getNs(), filterMultiple: false, sorter: true},
+            {title: '名称空间', dataIndex: 'name_space', filters: rv, filterMultiple: false, sorter: true},
             {title: '副本数', dataIndex: 'replicas'},
             {title: '镜像', dataIndex: 'images'},
             {title: '是否完成', dataIndex: 'is_complete'},

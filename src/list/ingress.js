@@ -1,14 +1,27 @@
-import {Button, Descriptions, Layout, PageHeader, Table} from "antd";
+import {Button, Descriptions, Form, Input, Layout, Modal, PageHeader, Select, Table} from "antd";
 import {getNs, getSider} from "../common";
 import React, {useEffect, useState} from "react";
 import {Content} from "antd/es/layout/layout";
 import axios from "axios";
 
+const options = [];
+for (let i = 0; i < 2; i++) {
+    const value = `${i.toString(36)}${i}`;
+    options.push({
+        value
+    });
+
+}
+console.log("正确的", options)
+let rv = []
+getNs(rv)
+console.log("错误的",rv )
 export default function Ingress(props) {
 
     const [data, setdata] = useState([]);
     const [isLoading, setisLoading] = useState(false);
     const [requested, setrequested] = useState(false);
+    const [visible, setVisible] = useState(false);
 
     function fetch(ns) {
 
@@ -46,6 +59,9 @@ export default function Ingress(props) {
 
 
     const renderContent = () => {
+        let rv = []
+        getNs(rv)
+
         const columns = [
             {
                 title: '名称', dataIndex: 'name', render: (text) => {
@@ -53,7 +69,7 @@ export default function Ingress(props) {
                 },
             },
             {
-                title: '名称空间', dataIndex: 'name_space', filters: getNs(), filterMultiple: false, sorter: true
+                title: '名称空间', dataIndex: 'name_space', filters: rv, filterMultiple: false, sorter: true
             },
             {title: '创建时间', dataIndex: 'create_time'},
 
@@ -68,13 +84,48 @@ export default function Ingress(props) {
 
         return (
             <Content className="site-layout-background">
-                <PageHeader ghost={false} title="信息" extra={[<Button key="3">创建虚拟机</Button>]}>
+                <PageHeader ghost={false} title="信息"
+                            extra={[<Button key="3" onClick={() => setVisible(true)}>创建ingress</Button>
+
+                            ]}>
                     <Descriptions size="small" column={3}>
                         <Descriptions.Item label="Created">Lili Qu</Descriptions.Item>
                         <Descriptions.Item label="Created">Lili Qu</Descriptions.Item>
                     </Descriptions>
+                    <Modal
+                        title="Modal 1000px width"
+                        centered
+                        visible={visible}
+                        onOk={() => setVisible(false)}
+                        onCancel={() => setVisible(false)}
+                        width={1000}
+                    >
+                        <Form>
+                            <Form.Item label="名称" required>
+                                <Form.Item
+                                    style={{display: 'inline-flex', width: 'calc(45% - 4px)'}}
+                                    name="名称"
+                                    rules={[{required: true, message: '不能为空'}]}
+                                >
+                                    <Input placeholder="ingress名称"/>
+                                </Form.Item>
+                                <Select
+                                    style={{display: 'inline-flex', width: 'calc(45% - 4px)'}}
+                                    dropdownMatchSelectWidth={false}
+                                    placement="bottomLeft"
+                                    options={rv}
+                                >
+                                </Select>
+                            </Form.Item>
+
+                            <p>some contents...</p>
+                            <p>some contents...</p>
+
+                        </Form>
+
+                    </Modal>
                 </PageHeader>
-                <Table dataSource={data} columns={columns} onChange={handleTableChange}>
+                <Table dataSource={data} columns={columns} onChange={handleTableChange} compact={true}>
                 </Table>
             </Content>
         )
@@ -86,3 +137,5 @@ export default function Ingress(props) {
         </Layout>
     )
 }
+
+
