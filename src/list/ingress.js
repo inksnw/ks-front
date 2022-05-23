@@ -12,6 +12,14 @@ export default function Ingress(props) {
     const [visible, setVisible] = useState(false);
     const [nameSpace, setnameSpace] = useState([]);
     const [pathCount, setpathCount] = useState(1);
+    const [formdata, setformdata] = useState({
+        ingress_name: "",
+        ingress_ns: "",
+        domain: "",
+        path: "",
+        service_name: "",
+        port: ""
+    });
 
 
     function fetch(ns) {
@@ -41,6 +49,10 @@ export default function Ingress(props) {
         setpathCount(pathCount + 1)
     }
 
+    function deletePath() {
+        setpathCount(pathCount - 1)
+    }
+
     useEffect(() => {
         if (!requested) {
             fetch("");
@@ -58,69 +70,84 @@ export default function Ingress(props) {
         const items = []
         for (let i = 0; i < pathCount; i++) {
             items.push(
-                <Row gutter={24} key={i}>
-                    <Col span={8}>
+                <Row gutter={32} key={i}>
+                    <Col span={6}>
                         <Form.Item label='Path'>
                             <Input placeholder='Path'/>
                         </Form.Item>
                     </Col>
 
-                    <Col span={8}>
+                    <Col span={6}>
                         <Form.Item label='服务名'>
                             <Input placeholder='填写service name'/>
                         </Form.Item>
                     </Col>
-                    <Col span={8}>
+                    <Col span={6}>
                         <Form.Item label='端口'>
                             <Input placeholder='80'/>
                         </Form.Item>
                     </Col>
+
                 </Row>)
 
         }
         return items
     }
 
-    function renderModal() {
-        return (<Modal title="创建一个ingress"
-                       centered
-                       visible={visible}
-                       onOk={() => setVisible(false)}
-                       onCancel={() => setVisible(false)}
-                       width={560}
-        >
-            <Form>
-                <Row gutter={24}>
-                    <Col span={10}>
-                        <Form.Item label='名称'>
-                            <Input placeholder="ingress名称"/>
-                        </Form.Item>
-                    </Col>
+    function handleOk(e) {
+        setVisible(false)
+        console.log(formdata)
+    }
 
-                    <Col span={10}>
-                        <Form.Item label='名称空间'>
-                            <Select>
-                                {nameSpace.map((item, index) => (<Select.Option key={index}
-                                                                                value={item.value}>{item.value}</Select.Option>))}
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row gutter={24}>
-                    <Col span={8}>
-                        <Form.Item label='域名'>
-                            <Input placeholder='填写域名'/>
-                        </Form.Item>
-                    </Col>
-                    <Col span={8}>
-                        <Form.Item>
-                            <Button onClick={addPath}>添加</Button>
-                        </Form.Item>
-                    </Col>
-                </Row>
-                {getPath()}
-            </Form>
-        </Modal>)
+    function formHandle(e) {
+        let son = JSON.parse(JSON.stringify(formdata))
+        son[e.target.name] = e.target.value
+        setformdata(son)
+    }
+
+    function renderModal() {
+        return (
+            <Modal title="创建一个ingress"
+                   centered
+                   visible={visible}
+                   onOk={handleOk}
+                   onCancel={() => setVisible(false)}
+                   width={800}
+            >
+                <Form>
+                    <Row gutter={32}>
+                        <Col span={10}>
+                            <Form.Item label='名称'>
+                                <Input name='ingress_name' onInput={formHandle} value={formdata.ingress_name}
+                                       placeholder="ingress名称"/>
+                            </Form.Item>
+                        </Col>
+
+                        <Col span={10}>
+                            <Form.Item label='名称空间'>
+                                <Select>
+                                    {nameSpace.map((item, index) => (<Select.Option key={index}
+                                                                                    value={item.value}>{item.value}</Select.Option>))}
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row gutter={32}>
+                        <Col span={8}>
+                            <Form.Item label='域名'>
+                                <Input name='domain' onInput={formHandle} value={formdata.domain} placeholder='填写域名'/>
+                            </Form.Item>
+                        </Col>
+                        <Col span={8}>
+                            <Form.Item>
+                                <Button onClick={addPath}>添加</Button>
+                                <Button onClick={deletePath}>删除</Button>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    {getPath()}
+                </Form>
+            </Modal>)
     }
 
     const renderContent = () => {
