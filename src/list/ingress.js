@@ -10,6 +10,7 @@ export default function Ingress(props) {
     const [isLoading, setisLoading] = useState(false);
     const [requested, setrequested] = useState(false);
     const [visible, setVisible] = useState(false);
+    const [nameSpace, setnameSpace] = useState([]);
 
 
     function fetch(ns) {
@@ -35,9 +36,11 @@ export default function Ingress(props) {
         fetch(filters.name_space);
     }
 
+
     useEffect(() => {
         if (!requested) {
             fetch("");
+            setnameSpace(getNs())
         }
 
         if (Object.keys(props.updateMsg).length !== 0) {
@@ -48,6 +51,8 @@ export default function Ingress(props) {
 
 
     const renderContent = () => {
+
+
         const columns = [
             {
                 title: '名称', dataIndex: 'name', render: (text) => {
@@ -90,21 +95,25 @@ export default function Ingress(props) {
                         <Form>
                             <Form.Item label="名称" required>
                                 <Form.Item
-                                    style={{display: 'inline-flex', width: 'calc(45% - 4px)'}}
+                                    style={{display: 'inline-flex', width: 'calc(25% - 4px)', marginRight: '22px'}}
                                     name="名称"
                                     rules={[{required: true, message: '不能为空'}]}
                                 >
                                     <Input placeholder="ingress名称"/>
                                 </Form.Item>
-
+                                名称空间:
                                 <Select
-                                    style={{display: 'inline-flex', width: 'calc(55% - 12px)'}}
+                                    style={{display: 'inline-flex', width: 'calc(25% - 20px)', marginLeft: '12px'}}
                                     name="名称"
+                                    label="名称二"
                                     placement="bottomLeft"
+                                    rules={[{required: true, message: '不能为空'}]}
                                 >
-                                    {/*todo 搞不懂怎么远程获取了*/}
-                                    <Select.Option value="default">default</Select.Option>
-
+                                    {
+                                        nameSpace.map((item, index) => (
+                                            <Select.Option key={index} value={item.value}>{item.value}</Select.Option>
+                                        ))
+                                    }
                                 </Select>
 
                             </Form.Item>
