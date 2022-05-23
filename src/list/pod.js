@@ -49,7 +49,7 @@ export default function Pods(props) {
 
 
     const renderContent = () => {
-        let rv= []
+        let rv = []
         getNs(rv)
         const columns = [
             {

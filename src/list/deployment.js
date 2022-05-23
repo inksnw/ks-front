@@ -48,7 +48,7 @@ export default function Deployments(props) {
 
 
     const renderContent = () => {
-        let rv =[]
+        let rv = []
         getNs(rv)
         const columns = [
             {
