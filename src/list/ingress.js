@@ -11,14 +11,16 @@ export default function Ingress(props) {
     const [requested, setrequested] = useState(false);
     const [visible, setVisible] = useState(false);
     const [nameSpace, setnameSpace] = useState([]);
-    const [pathCount, setpathCount] = useState(1);
+    // eslint-disable-next-line
     const [formdata, setformdata] = useState({
-        ingress_name: "",
-        ingress_ns: "",
-        domain: "",
-        path: "",
-        service_name: "",
-        port: ""
+        name: "",
+        namespace: "",
+        host: "",
+        paths: [{
+            path: "",
+            svc_name: "",
+            port: ""
+        }]
     });
 
 
@@ -46,11 +48,19 @@ export default function Ingress(props) {
     }
 
     function addPath() {
-        setpathCount(pathCount + 1)
+        let son = JSON.parse(JSON.stringify(formdata))
+        son.paths.push({
+            path: "",
+            svc_name: "",
+            port: ""
+        })
+        setformdata(son)
     }
 
     function deletePath() {
-        setpathCount(pathCount - 1)
+        let son = JSON.parse(JSON.stringify(formdata))
+        son.paths.pop()
+        setformdata(son)
     }
 
     useEffect(() => {
@@ -67,41 +77,51 @@ export default function Ingress(props) {
 
 
     function getPath() {
-        const items = []
-        for (let i = 0; i < pathCount; i++) {
-            items.push(
-                <Row gutter={32} key={i}>
-                    <Col span={6}>
-                        <Form.Item label='Path'>
-                            <Input placeholder='Path'/>
-                        </Form.Item>
-                    </Col>
+        return formdata.paths.map((item, index) => (
+            <Row gutter={32} key={index}>
+                <Col span={6}>
+                    <Form.Item label='Path'>
+                        <Input placeholder='Path' name='path' id={index} onInput={formHandle}/>
+                    </Form.Item>
+                </Col>
 
-                    <Col span={6}>
-                        <Form.Item label='服务名'>
-                            <Input placeholder='填写service name'/>
-                        </Form.Item>
-                    </Col>
-                    <Col span={6}>
-                        <Form.Item label='端口'>
-                            <Input placeholder='80'/>
-                        </Form.Item>
-                    </Col>
+                <Col span={6}>
+                    <Form.Item label='服务名'>
+                        <Input placeholder='填写service name' id={index} name='svc_name' onInput={formHandle}/>
+                    </Form.Item>
+                </Col>
+                <Col span={6}>
+                    <Form.Item label='端口'>
+                        <Input  placeholder='80' name='port' id={index} onInput={formHandle}/>
+                    </Form.Item>
+                </Col>
 
-                </Row>)
-
-        }
-        return items
+            </Row>
+        ))
     }
 
     function handleOk(e) {
         setVisible(false)
-        console.log(formdata)
+        const url = "http://127.0.0.1:8080/api/v1/ingress"
+        axios.post(url, formdata).then(response => {
+            console.log(response.data)
+        }).catch((error) => {
+            console.log(error)
+        })
     }
 
     function formHandle(e) {
+        const dicInput = ["path", "svc_name", "port"]
         let son = JSON.parse(JSON.stringify(formdata))
-        son[e.target.name] = e.target.value
+        if (e.type === "input") {
+            if (dicInput.indexOf(e.target.name) > -1) {
+                son.paths[e.target.id][e.target.name] = e.target.value
+            } else {
+                son[e.target.name] = e.target.value
+            }
+        } else {
+            son["namespace"] = e
+        }
         setformdata(son)
     }
 
@@ -118,14 +138,14 @@ export default function Ingress(props) {
                     <Row gutter={32}>
                         <Col span={10}>
                             <Form.Item label='名称'>
-                                <Input name='ingress_name' onInput={formHandle} value={formdata.ingress_name}
+                                <Input name='name' onInput={formHandle} value={formdata.name}
                                        placeholder="ingress名称"/>
                             </Form.Item>
                         </Col>
 
                         <Col span={10}>
                             <Form.Item label='名称空间'>
-                                <Select>
+                                <Select name='namespace' onChange={formHandle} value={formdata.namespace}>
                                     {nameSpace.map((item, index) => (<Select.Option key={index}
                                                                                     value={item.value}>{item.value}</Select.Option>))}
                                 </Select>
@@ -135,7 +155,7 @@ export default function Ingress(props) {
                     <Row gutter={32}>
                         <Col span={8}>
                             <Form.Item label='域名'>
-                                <Input name='domain' onInput={formHandle} value={formdata.domain} placeholder='填写域名'/>
+                                <Input name='host' onInput={formHandle} value={formdata.host} placeholder='填写域名'/>
                             </Form.Item>
                         </Col>
                         <Col span={8}>
