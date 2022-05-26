@@ -1,8 +1,28 @@
-import {Button, Col, Descriptions, Form, Input, Layout, Modal, PageHeader, Row, Select, Table} from "antd";
+import {
+    Button,
+    Col,
+    Descriptions,
+    Divider,
+    Form,
+    Input,
+    Layout,
+    Modal,
+    notification,
+    PageHeader,
+    Row,
+    Select,
+    Space,
+    Table
+} from "antd";
 import {getNs, getSider} from "../common";
 import React, {useEffect, useState} from "react";
 import {Content} from "antd/es/layout/layout";
 import axios from "axios";
+
+
+const Context = React.createContext({
+    name: "Default"
+});
 
 export default function Ingress(props) {
 
@@ -11,7 +31,6 @@ export default function Ingress(props) {
     const [requested, setrequested] = useState(false);
     const [visible, setVisible] = useState(false);
     const [nameSpace, setnameSpace] = useState([]);
-    // eslint-disable-next-line
     const [formdata, setformdata] = useState({
         name: "",
         namespace: "",
@@ -23,10 +42,12 @@ export default function Ingress(props) {
         }]
     });
 
+    const [api, contextHolder] = notification.useNotification();
+
 
     function fetch(ns) {
 
-        let url = ""
+        let url
         if (typeof (ns) === "undefined" || ns === null) {
             url = 'http://127.0.0.1:8080/api/v1/ingress'
         } else {
@@ -45,6 +66,28 @@ export default function Ingress(props) {
 
     const handleTableChange = (pagination, filters, sorter) => {
         fetch(filters.name_space);
+    }
+
+    function deleteIngress(record) {
+        const url = `http://127.0.0.1:8080/api/v1/namespaces/${record.namespace}/ingress/${record.name}`
+        axios.delete(url).then(response => {
+            console.log(response.data)
+            api.info({
+                message: `操作结果`,
+                description: (
+                    <Context.Consumer>{({name}) => `删除成功`}</Context.Consumer>
+                ),
+            });
+
+        }).catch((error) => {
+            api.info({
+                message: `操作结果`,
+                description: (
+                    <Context.Consumer>{({name}) => `删除失败${error}`}</Context.Consumer>
+                ),
+            });
+        })
+
     }
 
     function addPath() {
@@ -70,6 +113,7 @@ export default function Ingress(props) {
         }
 
         if (Object.keys(props.updateMsg).length !== 0) {
+            console.log("接到消息", props.updateMsg)
             fetch("");
         }
 
@@ -92,7 +136,7 @@ export default function Ingress(props) {
                 </Col>
                 <Col span={6}>
                     <Form.Item label='端口'>
-                        <Input  placeholder='80' name='port' id={index} onInput={formHandle}/>
+                        <Input placeholder='80' name='port' id={index} onInput={formHandle}/>
                     </Form.Item>
                 </Col>
 
@@ -170,14 +214,27 @@ export default function Ingress(props) {
             </Modal>)
     }
 
+
     const renderContent = () => {
-        const columns = [{
-            title: '名称', dataIndex: 'name', render: (text) => {
-                return <a href={text}>{text}</a>
+        const columns = [
+            {
+                title: '名称', dataIndex: 'name', render: (text) => {
+                    return <a href={text}>{text}</a>
+                },
             },
-        }, {
-            title: '名称空间', dataIndex: 'name_space', filters: getNs(), filterMultiple: false, sorter: true
-        }, {title: '创建时间', dataIndex: 'create_time'},
+            {
+                title: '名称空间', dataIndex: 'namespace', filters: getNs(), filterMultiple: false, sorter: true
+            },
+            {
+                title: 'Host', dataIndex: 'host'
+            },
+            {title: '创建时间', dataIndex: 'create_time'},
+            {
+                title: '操作', dataIndex: 'xxx', render: (e, record) =>
+                    <div>
+                        <Button key="3" onClick={() => deleteIngress(record)}>删除</Button>
+                    </div>
+            },
 
         ];
         if (!isLoading) {
@@ -192,6 +249,17 @@ export default function Ingress(props) {
                     <Descriptions.Item label="Created">Lili Qu</Descriptions.Item>
                     <Descriptions.Item label="Created">Lili Qu</Descriptions.Item>
                 </Descriptions>
+
+                <Context.Provider
+                    value={{
+                        name: "Ant Design"
+                    }}
+                >
+                    {contextHolder}
+                    <Space>
+                    </Space>
+                    <Divider/>
+                </Context.Provider>
 
             </PageHeader>
             <Table dataSource={data} columns={columns} onChange={handleTableChange} compact={true}>
