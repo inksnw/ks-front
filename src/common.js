@@ -4,6 +4,7 @@ import Sider from "antd/es/layout/Sider";
 import {Link} from "react-router-dom";
 import axios from "axios";
 
+
 function getItem(label, key, children) {
     return {
         key,
@@ -20,7 +21,8 @@ function getSider() {
                 getItem(<Link to="/pods"> pods </Link>, 'sub11'),
                 getItem(<Link to="/deployments"> deployment </Link>, 'sub12'),
             ]),
-        getItem(<Link to="/ingress"> ingress </Link>, 'sub2')
+        getItem(<Link to="/ingress"> ingress </Link>, 'sub2'),
+        getItem(<Link to="/secret"> Secret </Link>, 'sub3')
     ];
     return (<Sider width={150}>
         <Menu mode="inline"
