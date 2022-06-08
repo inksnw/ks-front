@@ -3,13 +3,20 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {getNs, getSider} from "../common";
 import {Content} from "antd/es/layout/layout";
-import {Button, Descriptions, Layout, PageHeader, Table} from "antd";
+import {Button, Col, Descriptions, Form, Input, Layout, Modal, PageHeader, Row, Select, Table} from "antd";
 
 export default function Secret(props) {
 
     const [data, setdata] = useState([]);
     const [isLoading, setisLoading] = useState(false);
     const [requested, setrequested] = useState(false);
+    const [visible, setVisible] = useState(false);
+    const [nameSpace, setnameSpace] = useState([]);
+    const [formdata, setformdata] = useState({
+        name: "", key: "", namespace: "", value: ""
+
+    });
+
 
     function fetch(ns) {
         let url = ""
@@ -33,6 +40,7 @@ export default function Secret(props) {
 
         if (!requested) {
             fetch("");
+            setnameSpace(getNs())
         }
 
         if (Object.keys(props.updateMsg).length !== 0) {
@@ -46,19 +54,80 @@ export default function Secret(props) {
         fetch(filters.name_space);
     }
 
+    function handleOk(e) {
+        setVisible(false)
+        const url = "http://127.0.0.1:8080/api/v1/secret"
+        axios.post(url, formdata).then(response => {
+            console.log(response.data)
+        }).catch((error) => {
+            console.log(error)
+        })
+    }
+
+    function formHandle(e) {
+        let son = JSON.parse(JSON.stringify(formdata))
+        if (e.type === "input") {
+            son[e.target.name] = e.target.value
+        } else {
+            son["namespace"] = e
+        }
+        setformdata(son)
+    }
+
+    function renderModal() {
+        return (<Modal title="创建一个secret"
+                       centered
+                       visible={visible}
+                       onOk={handleOk}
+                       onCancel={() => setVisible(false)}
+                       width={800}
+        >
+            <Form>
+                <Row gutter={32}>
+                    <Col span={10}>
+                        <Form.Item label='名称'>
+                            <Input name='name' onInput={formHandle} value={formdata.name}
+                                   placeholder="name"/>
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={10}>
+                        <Form.Item label='名称空间'>
+                            <Select name='namespace' onChange={formHandle} value={formdata.namespace}>
+                                {nameSpace.map((item, index) => (<Select.Option key={index}
+                                                                                value={item.value}>{item.value}</Select.Option>))}
+                            </Select>
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Row gutter={32}>
+                    <Col span={8}>
+                        <Form.Item label='key'>
+                            <Input name='key' onInput={formHandle} value={formdata.key} placeholder='键'/>
+                        </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                        <Form.Item label='value'>
+                            <Input name='value' onInput={formHandle} value={formdata.value} placeholder='值'/>
+                        </Form.Item>
+                    </Col>
+
+                </Row>
+
+            </Form>
+        </Modal>)
+    }
+
 
     const renderContent = () => {
 
-        const columns = [
-            {
-                title: '名称', dataIndex: 'name', render: (text) => {
-                    return <a href={"ss"}>{text}</a>
-                },
+        const columns = [{
+            title: '名称', dataIndex: 'name', render: (text) => {
+                return <a href={"ss"}>{text}</a>
             },
-            {
-                title: '名称空间', dataIndex: 'name_space', filters: getNs(), filterMultiple: false, sorter: true
-            },
-        ];
+        }, {
+            title: '名称空间', dataIndex: 'name_space', filters: getNs(), filterMultiple: false, sorter: true
+        },];
         if (!isLoading) {
             return (<Content className="site-layout-background">
                 <div><Table> </Table></div>
@@ -66,7 +135,8 @@ export default function Secret(props) {
         }
 
         return (<Content className="site-layout-background">
-            <PageHeader ghost={false} title="信息" extra={[<Button key="3">创建虚拟机</Button>]}>
+            <PageHeader ghost={false} title="信息"
+                        extra={[<Button key="3" onClick={() => setVisible(true)}>创建secret</Button>]}>
                 <Descriptions size="small" column={3}>
                     <Descriptions.Item label="Created">Lili Qu</Descriptions.Item>
                     <Descriptions.Item label="Created">Lili Qu</Descriptions.Item>
@@ -81,5 +151,6 @@ export default function Secret(props) {
     return (<Layout>
         {getSider()}
         {renderContent()}
+        {renderModal()}
     </Layout>)
 }
