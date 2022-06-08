@@ -54,7 +54,7 @@ export default function Pods(props) {
         const columns = [
             {
                 title: '名称', dataIndex: 'name', render: (text) => {
-                    return <a href={"ss"}>{text}</a>
+                    return <a href={"logs"}>{text}</a>
                 },
             },
             {
