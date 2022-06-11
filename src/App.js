@@ -7,6 +7,7 @@ import Pods from "./list/pod";
 import Ingress from "./list/ingress";
 import Secret from "./list/secret";
 import Node from "./list/node";
+import Role from "./list/role";
 
 
 class App extends React.Component {
@@ -54,6 +55,7 @@ class App extends React.Component {
                     <Route path="/ingress" element={<Ingress updateMsg={this.state.data}/>}/>
                     <Route path="/secret" element={<Secret updateMsg={this.state.data}/>}/>
                     <Route path="/node" element={<Node/>}/>
+                    <Route path="/role" element={<Role updateMsg={this.state.data}/>}/>
 
                 </Routes>
             </Router>)
