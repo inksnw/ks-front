@@ -58,6 +58,12 @@ export default function Node(props) {
                 },
             },
             {
+                title: 'cpu使用率', dataIndex: 'cpu'
+            },
+            {
+                title: '内存使用率', dataIndex: 'mem'
+            },
+            {
                 title: '操作', dataIndex: 'xxx', render: (e, record) =>
                     <div>
                         <Button key="4" onClick={() => setShellVisible(true)}>运行shell</Button>
