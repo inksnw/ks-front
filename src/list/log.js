@@ -14,7 +14,7 @@ export default function Logs(props) {
                 url: url,
                 method: 'get',
                 onDownloadProgress: e => {
-                    console.log("@@@@", e.currentTarget.response)
+
                     const dataChunk = e.currentTarget.response
                     setlogs(logs + dataChunk)
                 }
@@ -30,7 +30,7 @@ export default function Logs(props) {
         }
     });
     const renderContent = () => {
-        // let str = '要解析出换行符\n要解析出换行符'
+
         return (
 
             <div style={{whiteSpace: "pre-wrap"}}>{logs}</div>
