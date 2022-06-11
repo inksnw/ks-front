@@ -6,6 +6,7 @@ import Deployments from "./list/deployment";
 import Pods from "./list/pod";
 import Ingress from "./list/ingress";
 import Secret from "./list/secret";
+import Node from "./list/node";
 
 
 class App extends React.Component {
@@ -52,6 +53,7 @@ class App extends React.Component {
                     <Route path="/deployments" element={<Deployments updateMsg={this.state.data}/>}/>
                     <Route path="/ingress" element={<Ingress updateMsg={this.state.data}/>}/>
                     <Route path="/secret" element={<Secret updateMsg={this.state.data}/>}/>
+                    <Route path="/node" element={<Node/>}/>
 
                 </Routes>
             </Router>)
