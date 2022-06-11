@@ -25,6 +25,7 @@ export default function Node(props) {
         setrequested(true)
     }
 
+
     useEffect(() => {
         if (!requested) {
             fetch("");
@@ -42,7 +43,7 @@ export default function Node(props) {
                    onCancel={() => setShellVisible(false)}
                    width={800}
             >
-                <WebSSH/>
+                <WebSSH url={'ws://localhost:8080/nodeshell'}/>
 
             </Modal>)
     }
@@ -86,5 +87,6 @@ export default function Node(props) {
         {getSider()}
         {renderContent()}
         {renderShellModal()}
+
     </Layout>)
 }

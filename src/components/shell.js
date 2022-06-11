@@ -30,7 +30,7 @@ class WebSSH extends React.Component {
         }
         term._initialized = true
 
-        const webSocket = new WebSocket('ws://localhost:8080/webshell');//建立通道
+        const webSocket = new WebSocket(this.props.url);//建立通道
         term.onKey(e => {
             webSocket.send(e.key);
         })

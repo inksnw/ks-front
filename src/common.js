@@ -15,12 +15,8 @@ function getItem(label, key, children) {
 
 function getSider() {
     const items2 = [
-
-        getItem(<Link to="/"> 工作负载 </Link>, 'sub1',
-            [
-                getItem(<Link to="/pods"> pods </Link>, 'sub11'),
-                getItem(<Link to="/deployments"> deployment </Link>, 'sub12'),
-            ]),
+        getItem(<Link to="/pods"> pods </Link>, 'sub11'),
+        getItem(<Link to="/deployments"> deployment </Link>, 'sub12'),
         getItem(<Link to="/ingress"> ingress </Link>, 'sub2'),
         getItem(<Link to="/secret"> Secret </Link>, 'sub3'),
         getItem(<Link to="/node"> Node </Link>, 'sub4')

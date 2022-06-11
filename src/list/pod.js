@@ -60,6 +60,7 @@ export default function Pods(props) {
                    onOk={() => setLogVisible(false)}
                    onCancel={() => setLogVisible(false)}
                    width={800}
+                   bodyStyle={{height: '400px', overflowY: 'auto'}}
             >
                 <Logs/>
 
@@ -75,7 +76,7 @@ export default function Pods(props) {
                    onCancel={() => setShellVisible(false)}
                    width={800}
             >
-                <WebSSH/>
+                <WebSSH url={'ws://localhost:8080/webshell'}/>
 
             </Modal>)
     }
