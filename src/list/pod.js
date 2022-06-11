@@ -1,14 +1,20 @@
-import {Button, Descriptions, Layout, PageHeader, Table} from "antd";
+import {Button, Descriptions, Layout, Modal, PageHeader, Table} from "antd";
 import {getNs, getSider} from "../common";
 import React, {useEffect, useState} from "react";
 import {Content} from "antd/es/layout/layout";
 import axios from "axios";
+import Logs from "../components/log";
+import WebSSH from "../components/shell";
 
 export default function Pods(props) {
 
     const [data, setdata] = useState([]);
     const [isLoading, setisLoading] = useState(false);
     const [requested, setrequested] = useState(false);
+    // eslint-disable-next-line
+    const [logVisible, setLogVisible] = useState(false);
+    // eslint-disable-next-line
+    const [ShellVisible, setShellVisible] = useState(false);
 
     function fetch(ns) {
         let url = ""
@@ -48,6 +54,34 @@ export default function Pods(props) {
     }
 
 
+    function renderLogModal() {
+        return (
+            <Modal title="log"
+                   visible={logVisible}
+                   centered
+                   onOk={() => setLogVisible(false)}
+                   onCancel={() => setLogVisible(false)}
+                   width={800}
+            >
+                <Logs/>
+
+            </Modal>)
+    }
+
+    function renderShellModal() {
+        return (
+            <Modal title="shell"
+                   visible={ShellVisible}
+                   centered
+                   onOk={() => setShellVisible(false)}
+                   onCancel={() => setShellVisible(false)}
+                   width={800}
+            >
+                <WebSSH/>
+
+            </Modal>)
+    }
+
     const renderContent = () => {
         let rv = []
         getNs(rv)
@@ -60,12 +94,18 @@ export default function Pods(props) {
             {
                 title: '名称空间', dataIndex: 'name_space', filters: rv, filterMultiple: false, sorter: true
             },
-            {title: '镜像', dataIndex: 'images'},
+            {title: '镜像', dataIndex: 'images', width: "20"},
             {title: 'node_name', dataIndex: 'node_name'},
             {title: 'IP', dataIndex: 'IP'},
             {title: '状态', dataIndex: 'phase'},
-            {title: 'is_ready', dataIndex: 'is_ready'},
             {title: '创建时间', dataIndex: 'create_time'},
+            {
+                title: '操作', dataIndex: 'xxx', render: (e, record) =>
+                    <div>
+                        <Button key="3" onClick={() => setLogVisible(true)}>查看日志</Button>
+                        <Button key="4" onClick={() => setShellVisible(true)}>运行shell</Button>
+                    </div>
+            },
         ];
         if (!isLoading) {
             return (<Content className="site-layout-background">
@@ -89,5 +129,7 @@ export default function Pods(props) {
     return (<Layout>
         {getSider()}
         {renderContent()}
+        {renderLogModal()}
+        {renderShellModal()}
     </Layout>)
 }

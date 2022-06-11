@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import Axios from "axios";
 import {Layout} from "antd";
-import {getSider} from "../common";
 
 export default function Logs(props) {
     const [logs, setlogs] = useState("");
@@ -30,17 +29,13 @@ export default function Logs(props) {
         }
     });
     const renderContent = () => {
-
         return (
-
             <div style={{whiteSpace: "pre-wrap"}}>{logs}</div>
-
         )
     }
 
-
     return (<Layout>
-        {getSider()}
+
         {renderContent()}
     </Layout>)
 }
