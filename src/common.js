@@ -25,7 +25,8 @@ function getSider() {
     return (<Sider width={150}>
         <Menu mode="inline"
               defaultSelectedKeys={['1']}
-              style={{height: '100%', borderRight: -1,}}
+              className="sidebar"
+
               items={items2}
         />
     </Sider>);

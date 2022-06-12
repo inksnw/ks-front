@@ -1,6 +1,6 @@
 import React from 'react';
 import 'antd/dist/antd.min.css';
-import './index.css';
+import './css/index.css';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import Deployments from "./list/deployment";
 import Pods from "./list/pod";
