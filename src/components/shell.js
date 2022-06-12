@@ -2,6 +2,22 @@ import React from 'react';
 import {Terminal} from 'xterm';
 import 'xterm/css/xterm.css';
 import {FitAddon} from 'xterm-addon-fit';
+import {Modal} from "antd";
+
+function renderShellModal(ShellVisible, setShellVisible, url) {
+    return (
+        <Modal title="shell"
+               visible={ShellVisible}
+               centered
+               onOk={() => setShellVisible(false)}
+               onCancel={() => setShellVisible(false)}
+               width={800}
+        >
+            <WebSSH url={url}/>
+
+        </Modal>)
+}
+
 
 class WebSSH extends React.Component {
 
@@ -46,4 +62,4 @@ class WebSSH extends React.Component {
     }
 }
 
-export default WebSSH
+export {WebSSH, renderShellModal}

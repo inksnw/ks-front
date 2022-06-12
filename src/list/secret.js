@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 
 import axios from "axios";
-import {getNs, getSider} from "../common";
+import {getSelectNS, getSider, renderLoading} from "../common";
 import {Content} from "antd/es/layout/layout";
 import {Button, Col, Descriptions, Form, Input, Layout, Modal, PageHeader, Row, Select, Table} from "antd";
 
@@ -11,7 +11,6 @@ export default function Secret(props) {
     const [isLoading, setisLoading] = useState(false);
     const [requested, setrequested] = useState(false);
     const [visible, setVisible] = useState(false);
-    const [nameSpace, setnameSpace] = useState([]);
     const [formdata, setformdata] = useState({
         name: "", key: "", namespace: "", value: ""
 
@@ -40,7 +39,6 @@ export default function Secret(props) {
 
         if (!requested) {
             fetch("");
-            setnameSpace(getNs())
         }
 
         if (Object.keys(props.updateMsg).length !== 0) {
@@ -94,8 +92,7 @@ export default function Secret(props) {
                     <Col span={10}>
                         <Form.Item label='名称空间'>
                             <Select name='namespace' onChange={formHandle} value={formdata.namespace}>
-                                {nameSpace.map((item, index) => (<Select.Option key={index}
-                                                                                value={item.value}>{item.value}</Select.Option>))}
+                                {getSelectNS(props.ns)}
                             </Select>
                         </Form.Item>
                     </Col>
@@ -126,12 +123,10 @@ export default function Secret(props) {
                 return <a href={"ss"}>{text}</a>
             },
         }, {
-            title: '名称空间', dataIndex: 'name_space', filters: getNs(), filterMultiple: false, sorter: true
+            title: '名称空间', dataIndex: 'name_space', filters: props.ns, filterMultiple: false, sorter: true
         },];
         if (!isLoading) {
-            return (<Content className="site-layout-background">
-                <div><Table> </Table></div>
-            </Content>)
+            return renderLoading()
         }
 
         return (<Content className="site-layout-background">

@@ -1,5 +1,5 @@
 import {Button, Descriptions, Layout, PageHeader, Table} from "antd";
-import {getNs, getSider} from "../common";
+import {getSider, renderLoading} from "../common";
 import React, {useEffect, useState} from "react";
 import {Content} from "antd/es/layout/layout";
 import axios from "axios";
@@ -39,8 +39,6 @@ export default function Deployments(props) {
         }
 
         if (Object.keys(props.updateMsg).length !== 0) {
-            // const obj = JSON.parse(props.deployList);
-            // setdata(obj.items)
             fetch("");
         }
 
@@ -48,15 +46,14 @@ export default function Deployments(props) {
 
 
     const renderContent = () => {
-        let rv = []
-        getNs(rv)
+
         const columns = [
             {
                 title: '名称', dataIndex: 'name', render: (text) => {
                     return <a href={text}>{text}</a>
                 },
             },
-            {title: '名称空间', dataIndex: 'name_space', filters: rv, filterMultiple: false, sorter: true},
+            {title: '名称空间', dataIndex: 'name_space', filters: props.ns, filterMultiple: false, sorter: true},
             {title: '副本数', dataIndex: 'replicas'},
             {title: '镜像', dataIndex: 'images'},
             {title: '是否完成', dataIndex: 'is_complete'},
@@ -65,11 +62,7 @@ export default function Deployments(props) {
 
         ];
         if (!isLoading) {
-            return (
-                <Content className="site-layout-background">
-                    <div><Table> </Table></div>
-                </Content>
-            )
+            return renderLoading()
         }
 
         return (

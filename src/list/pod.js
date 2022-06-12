@@ -1,10 +1,10 @@
-import {Button, Descriptions, Layout, Modal, PageHeader, Table} from "antd";
-import {getNs, getSider} from "../common";
+import {Button, Descriptions, Layout, PageHeader, Table} from "antd";
+import { getSider, renderLoading} from "../common";
 import React, {useEffect, useState} from "react";
 import {Content} from "antd/es/layout/layout";
 import axios from "axios";
-import Logs from "../components/log";
-import WebSSH from "../components/shell";
+import {RenderLogModal} from "../components/log";
+import {renderShellModal} from "../components/shell";
 
 export default function Pods(props) {
 
@@ -13,13 +13,15 @@ export default function Pods(props) {
     const [requested, setrequested] = useState(false);
     const [logVisible, setLogVisible] = useState(false);
     const [ShellVisible, setShellVisible] = useState(false);
+    const [podName, setPodName] = useState("");
+    const [ns, setns] = useState("");
 
     function fetch(ns) {
         let url = ""
-        if (typeof (ns) === "undefined" || ns === null) {
+        if (typeof (ns) === "undefined" || ns === null || ns === "") {
             url = 'http://127.0.0.1:8080/api/v1/pods'
         } else {
-            url = 'http://127.0.0.1:8080/api/v1/pods?'.concat('ns=', ns)
+            url = `http://127.0.0.1:8080/api/v1/namespaces/${ns}/pods?`
         }
 
         axios.get(url).then(response => {
@@ -50,40 +52,13 @@ export default function Pods(props) {
 
         fetch(filters.name_space);
     }
-
-
-    function renderLogModal() {
-        return (
-            <Modal title="log"
-                   visible={logVisible}
-                   centered
-                   onOk={() => setLogVisible(false)}
-                   onCancel={() => setLogVisible(false)}
-                   width={800}
-                   bodyStyle={{height: '400px', overflowY: 'auto'}}
-            >
-                <Logs/>
-
-            </Modal>)
-    }
-
-    function renderShellModal() {
-        return (
-            <Modal title="shell"
-                   visible={ShellVisible}
-                   centered
-                   onOk={() => setShellVisible(false)}
-                   onCancel={() => setShellVisible(false)}
-                   width={800}
-            >
-                <WebSSH url={'ws://localhost:8080/webshell'}/>
-
-            </Modal>)
+    const showModal = (record) => {
+        setLogVisible(true)
+        setPodName(record.name)
+        setns(record.name_space)
     }
 
     const renderContent = () => {
-        let rv = []
-        getNs(rv)
         const columns = [
             {
                 title: '名称', dataIndex: 'name', render: (text) => {
@@ -91,7 +66,7 @@ export default function Pods(props) {
                 },
             },
             {
-                title: '名称空间', dataIndex: 'name_space', filters: rv, filterMultiple: false, sorter: true
+                title: '名称空间', dataIndex: 'name_space', filters:  props.ns, filterMultiple: false, sorter: true
             },
             {title: '镜像', dataIndex: 'images', width: "20"},
             {title: 'node_name', dataIndex: 'node_name'},
@@ -101,17 +76,14 @@ export default function Pods(props) {
             {
                 title: '操作', dataIndex: 'xxx', render: (e, record) =>
                     <div>
-                        <Button key="3" onClick={() => setLogVisible(true)}>查看日志</Button>
+                        <Button key="3" onClick={() => showModal(record)}>查看日志</Button>
                         <Button key="4" onClick={() => setShellVisible(true)}>运行shell</Button>
                     </div>
             },
         ];
         if (!isLoading) {
-            return (<Content className="site-layout-background">
-                <div><Table> </Table></div>
-            </Content>)
+            return renderLoading()
         }
-
         return (<Content className="site-layout-background">
             <PageHeader ghost={false} title="信息" extra={[<Button key="3">创建虚拟机</Button>]}>
                 <Descriptions size="small" column={3}>
@@ -125,10 +97,11 @@ export default function Pods(props) {
     }
 
 
-    return (<Layout>
-        {getSider()}
-        {renderContent()}
-        {renderLogModal()}
-        {renderShellModal()}
-    </Layout>)
+    return (
+        <Layout>
+            {getSider()}
+            {renderContent()}
+            {RenderLogModal(logVisible, setLogVisible, ns, podName)}
+            {renderShellModal(ShellVisible, setShellVisible, 'ws://localhost:8080/webshell')}
+        </Layout>)
 }

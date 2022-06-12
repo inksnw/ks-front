@@ -14,7 +14,7 @@ import {
     Space,
     Table
 } from "antd";
-import {getNs, getSider} from "../common";
+import { getSelectNS, getSider, renderLoading} from "../common";
 import React, {useEffect, useState} from "react";
 import {Content} from "antd/es/layout/layout";
 import axios from "axios";
@@ -109,7 +109,7 @@ export default function Ingress(props) {
     useEffect(() => {
         if (!requested) {
             fetch("");
-            setnameSpace(getNs())
+            setnameSpace( props.ns)
         }
 
         if (Object.keys(props.updateMsg).length !== 0) {
@@ -169,6 +169,7 @@ export default function Ingress(props) {
         setformdata(son)
     }
 
+
     function renderModal() {
         return (
             <Modal title="创建一个ingress"
@@ -190,8 +191,7 @@ export default function Ingress(props) {
                         <Col span={10}>
                             <Form.Item label='名称空间'>
                                 <Select name='namespace' onChange={formHandle} value={formdata.namespace}>
-                                    {nameSpace.map((item, index) => (<Select.Option key={index}
-                                                                                    value={item.value}>{item.value}</Select.Option>))}
+                                    {getSelectNS(nameSpace)}
                                 </Select>
                             </Form.Item>
                         </Col>
@@ -223,7 +223,7 @@ export default function Ingress(props) {
                 },
             },
             {
-                title: '名称空间', dataIndex: 'namespace', filters: getNs(), filterMultiple: false, sorter: true
+                title: '名称空间', dataIndex: 'namespace', filters:  props.ns, filterMultiple: false, sorter: true
             },
             {
                 title: 'Host', dataIndex: 'host'
@@ -238,9 +238,7 @@ export default function Ingress(props) {
 
         ];
         if (!isLoading) {
-            return (<Content className="site-layout-background">
-                <div><Table> </Table></div>
-            </Content>)
+            return renderLoading()
         }
         return (<Content className="site-layout-background">
             <PageHeader ghost={false} title="信息"

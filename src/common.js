@@ -1,8 +1,8 @@
-import {Menu} from "antd";
+import {Menu, Select, Table} from "antd";
 import React from 'react';
 import Sider from "antd/es/layout/Sider";
 import {Link} from "react-router-dom";
-import axios from "axios";
+import {Content} from "antd/es/layout/layout";
 
 
 function getItem(label, key, children) {
@@ -31,21 +31,20 @@ function getSider() {
     </Sider>);
 }
 
-function getNs() {
-    const url = 'http://127.0.0.1:8080/api/v1/namespaces'
-    let rv = []
-    axios.get(url).then(response => {
-        for (const rvKey in response.data.items) {
-            let key = response.data.items[rvKey].name
-            rv.push({value: key, text: key})
-        }
-        return rv
 
-    }).catch((error) => {
-        console.log(error)
-        return []
-    })
-    return rv
+function renderLoading() {
+    return (
+        <Content className="site-layout-background">
+            <div><Table> </Table></div>
+        </Content>
+    );
 }
 
-export {getItem, getSider, getNs}
+function getSelectNS(nameSpace) {
+    return nameSpace.map((item, index) =>
+        <Select.Option key={index} value={item.value}>{item.value}</Select.Option>
+    );
+}
+
+
+export {getItem, getSider, renderLoading, getSelectNS}

@@ -1,9 +1,9 @@
-import {Button, Descriptions, Layout, Modal, PageHeader, Table} from "antd";
-import {getNs, getSider} from "../common";
+import {Button, Descriptions, Layout, PageHeader, Table} from "antd";
+import { getSider, renderLoading} from "../common";
 import React, {useEffect, useState} from "react";
 import {Content} from "antd/es/layout/layout";
 import axios from "axios";
-import WebSSH from "../components/shell";
+import {renderShellModal} from "../components/shell";
 
 export default function Node(props) {
 
@@ -34,23 +34,8 @@ export default function Node(props) {
     }, [props, requested]);
 
 
-    function renderShellModal() {
-        return (
-            <Modal title="shell"
-                   visible={ShellVisible}
-                   centered
-                   onOk={() => setShellVisible(false)}
-                   onCancel={() => setShellVisible(false)}
-                   width={800}
-            >
-                <WebSSH url={'ws://localhost:8080/nodeshell'}/>
-
-            </Modal>)
-    }
-
     const renderContent = () => {
-        let rv = []
-        getNs(rv)
+
         const columns = [
             {
                 title: '名称', dataIndex: 'name', render: (text) => {
@@ -71,9 +56,7 @@ export default function Node(props) {
             },
         ];
         if (!isLoading) {
-            return (<Content className="site-layout-background">
-                <div><Table> </Table></div>
-            </Content>)
+            return renderLoading()
         }
 
         return (<Content className="site-layout-background">
@@ -92,7 +75,7 @@ export default function Node(props) {
     return (<Layout>
         {getSider()}
         {renderContent()}
-        {renderShellModal()}
+        {renderShellModal(ShellVisible, setShellVisible, 'ws://localhost:8080/nodeshell')}
 
     </Layout>)
 }
