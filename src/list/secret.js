@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 
 import axios from "axios";
-import {getSelectNS, getSider, renderLoading} from "../common";
+import {selectNS, sideBar, loading} from "../components/common";
 import {Content} from "antd/es/layout/layout";
-import {Button, Col, Descriptions, Form, Input, Layout, Modal, PageHeader, Row, Select, Table} from "antd";
+import {Button, Col,  Form, Input, Layout, Modal, PageHeader, Row, Select, Table} from "antd";
 
 export default function Secret(props) {
 
@@ -92,7 +92,7 @@ export default function Secret(props) {
                     <Col span={10}>
                         <Form.Item label='名称空间'>
                             <Select name='namespace' onChange={formHandle} value={formdata.namespace}>
-                                {getSelectNS(props.ns)}
+                                {selectNS(props.ns)}
                             </Select>
                         </Form.Item>
                     </Col>
@@ -126,16 +126,13 @@ export default function Secret(props) {
             title: '名称空间', dataIndex: 'name_space', filters: props.ns, filterMultiple: false, sorter: true
         },];
         if (!isLoading) {
-            return renderLoading()
+            return loading()
         }
 
         return (<Content className="site-layout-background">
             <PageHeader ghost={false} title="信息"
                         extra={[<Button key="3" onClick={() => setVisible(true)}>创建secret</Button>]}>
-                <Descriptions size="small" column={3}>
-                    <Descriptions.Item label="Created">Lili Qu</Descriptions.Item>
-                    <Descriptions.Item label="Created">Lili Qu</Descriptions.Item>
-                </Descriptions>
+
             </PageHeader>
             <Table dataSource={data} columns={columns} onChange={handleTableChange}>
             </Table>
@@ -144,7 +141,7 @@ export default function Secret(props) {
 
 
     return (<Layout>
-        {getSider()}
+        {sideBar()}
         {renderContent()}
         {renderModal()}
     </Layout>)

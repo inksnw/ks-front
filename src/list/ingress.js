@@ -1,7 +1,6 @@
 import {
     Button,
     Col,
-    Descriptions,
     Divider,
     Form,
     Input,
@@ -14,7 +13,7 @@ import {
     Space,
     Table
 } from "antd";
-import { getSelectNS, getSider, renderLoading} from "../common";
+import {loading, selectNS, sideBar} from "../components/common";
 import React, {useEffect, useState} from "react";
 import {Content} from "antd/es/layout/layout";
 import axios from "axios";
@@ -109,7 +108,7 @@ export default function Ingress(props) {
     useEffect(() => {
         if (!requested) {
             fetch("");
-            setnameSpace( props.ns)
+            setnameSpace(props.ns)
         }
 
         if (Object.keys(props.updateMsg).length !== 0) {
@@ -191,7 +190,7 @@ export default function Ingress(props) {
                         <Col span={10}>
                             <Form.Item label='名称空间'>
                                 <Select name='namespace' onChange={formHandle} value={formdata.namespace}>
-                                    {getSelectNS(nameSpace)}
+                                    {selectNS(nameSpace)}
                                 </Select>
                             </Form.Item>
                         </Col>
@@ -223,7 +222,7 @@ export default function Ingress(props) {
                 },
             },
             {
-                title: '名称空间', dataIndex: 'namespace', filters:  props.ns, filterMultiple: false, sorter: true
+                title: '名称空间', dataIndex: 'namespace', filters: props.ns, filterMultiple: false, sorter: true
             },
             {
                 title: 'Host', dataIndex: 'host'
@@ -238,34 +237,27 @@ export default function Ingress(props) {
 
         ];
         if (!isLoading) {
-            return renderLoading()
+            return loading()
         }
-        return (<Content className="site-layout-background">
-            <PageHeader ghost={false} title="信息"
-                        extra={[<Button key="3" onClick={() => setVisible(true)}>创建ingress</Button>]}>
-                <Descriptions size="small" column={3}>
-                    <Descriptions.Item label="Created">Lili Qu</Descriptions.Item>
-                    <Descriptions.Item label="Created">Lili Qu</Descriptions.Item>
-                </Descriptions>
+        return (
+            <Content className="site-layout-background">
+                <PageHeader ghost={false} title="Ingress"
+                            extra={[<Button key="3" onClick={() => setVisible(true)}>创建ingress</Button>]}>
 
-                <Context.Provider
-                    value={{
-                        name: "Ant Design"
-                    }}
-                >
-                    {contextHolder}
-                    <Space>
-                    </Space>
-                    <Divider/>
-                </Context.Provider>
 
-            </PageHeader>
-            <Table dataSource={data} columns={columns} onChange={handleTableChange} compact={true}>
-            </Table>
-        </Content>)
+                    <Context.Provider value={{name: "Ant Design"}}>
+                        {contextHolder}
+                        <Space> </Space>
+                        <Divider/>
+                    </Context.Provider>
+
+                </PageHeader>
+                <Table dataSource={data} columns={columns} onChange={handleTableChange} compact={true}>
+                </Table>
+            </Content>)
     }
     return (<Layout>
-        {getSider()}
+        {sideBar()}
         {renderContent()}
         {renderModal()}
     </Layout>)

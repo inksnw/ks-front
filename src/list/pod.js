@@ -1,5 +1,5 @@
-import {Button, Descriptions, Layout, PageHeader, Table} from "antd";
-import { getSider, renderLoading} from "../common";
+import {Button, Layout, PageHeader, Table} from "antd";
+import {loading, sideBar} from "../components/common";
 import React, {useEffect, useState} from "react";
 import {Content} from "antd/es/layout/layout";
 import axios from "axios";
@@ -66,7 +66,7 @@ export default function Pods(props) {
                 },
             },
             {
-                title: '名称空间', dataIndex: 'name_space', filters:  props.ns, filterMultiple: false, sorter: true
+                title: '名称空间', dataIndex: 'name_space', filters: props.ns, filterMultiple: false, sorter: true
             },
             {title: '镜像', dataIndex: 'images', width: "20"},
             {title: 'node_name', dataIndex: 'node_name'},
@@ -82,24 +82,20 @@ export default function Pods(props) {
             },
         ];
         if (!isLoading) {
-            return renderLoading()
+            return loading()
         }
-        return (<Content className="site-layout-background">
-            <PageHeader ghost={false} title="信息" extra={[<Button key="3">创建虚拟机</Button>]}>
-                <Descriptions size="small" column={3}>
-                    <Descriptions.Item label="Created">Lili Qu</Descriptions.Item>
-                    <Descriptions.Item label="Created">Lili Qu</Descriptions.Item>
-                </Descriptions>
-            </PageHeader>
-            <Table dataSource={data} columns={columns} onChange={handleTableChange}>
-            </Table>
-        </Content>)
+        return (
+            <Content className="site-layout-background">
+                <PageHeader ghost={false} title="信息" extra={[<Button key="3">创建虚拟机</Button>]}> </PageHeader>
+                <Table dataSource={data} columns={columns} onChange={handleTableChange}> </Table>
+            </Content>
+        )
     }
 
 
     return (
         <Layout>
-            {getSider()}
+            {sideBar()}
             {renderContent()}
             {RenderLogModal(logVisible, setLogVisible, ns, podName)}
             {renderShellModal(ShellVisible, setShellVisible, 'ws://localhost:8080/webshell')}

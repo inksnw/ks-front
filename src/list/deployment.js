@@ -1,5 +1,5 @@
-import {Button, Descriptions, Layout, PageHeader, Table} from "antd";
-import {getSider, renderLoading} from "../common";
+import {Button, Layout, PageHeader, Table} from "antd";
+import {loading, sideBar} from "../components/common";
 import React, {useEffect, useState} from "react";
 import {Content} from "antd/es/layout/layout";
 import axios from "axios";
@@ -62,25 +62,19 @@ export default function Deployments(props) {
 
         ];
         if (!isLoading) {
-            return renderLoading()
+            return loading()
         }
 
         return (
             <Content className="site-layout-background">
-                <PageHeader ghost={false} title="信息" extra={[<Button key="3">创建虚拟机</Button>]}>
-                    <Descriptions size="small" column={3}>
-                        <Descriptions.Item label="Created">Lili Qu</Descriptions.Item>
-                        <Descriptions.Item label="Created">Lili Qu</Descriptions.Item>
-                    </Descriptions>
-                </PageHeader>
-                <Table dataSource={data} columns={columns} onChange={handleTableChange}>
-                </Table>
+                <PageHeader title="deployment" extra={[<Button key="3">创建deployment</Button>]}> </PageHeader>
+                <Table dataSource={data} columns={columns} onChange={handleTableChange}> </Table>
             </Content>
         )
     }
     return (
         <Layout>
-            {getSider()}
+            {sideBar()}
             {renderContent()}
         </Layout>
     )
