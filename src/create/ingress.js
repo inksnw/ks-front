@@ -5,7 +5,7 @@ import axios from "axios";
 
 function RenderModal(visible, setVisible, nameSpace) {
 
-    const [formdata, setformdata] = useState({
+    const [formData, setFormData] = useState({
         name: "",
         namespace: "",
         host: "",
@@ -17,39 +17,39 @@ function RenderModal(visible, setVisible, nameSpace) {
     });
 
     function addPath() {
-        let son = JSON.parse(JSON.stringify(formdata))
+        let son = JSON.parse(JSON.stringify(formData))
         son.paths.push({
             path: "",
             svc_name: "",
             port: ""
         })
-        setformdata(son)
+        setFormData(son)
     }
 
     function deletePath() {
-        let son = JSON.parse(JSON.stringify(formdata))
+        let son = JSON.parse(JSON.stringify(formData))
         son.paths.pop()
-        setformdata(son)
+        setFormData(son)
     }
 
 
     function getPath() {
-        return formdata.paths.map((item, index) => (
+        return formData.paths.map((item, index) => (
             <Row gutter={32} key={index}>
                 <Col span={6}>
                     <Form.Item label='Path'>
-                        <Input placeholder='Path' name='path' id={index} onInput={formHandle}/>
+                        <Input placeholder='Path' name='path' id={index} onInput={subHandle}/>
                     </Form.Item>
                 </Col>
 
                 <Col span={6}>
                     <Form.Item label='服务名'>
-                        <Input placeholder='填写service name' id={index} name='svc_name' onInput={formHandle}/>
+                        <Input placeholder='填写service name' id={index} name='svc_name' onInput={subHandle}/>
                     </Form.Item>
                 </Col>
                 <Col span={6}>
                     <Form.Item label='端口'>
-                        <Input placeholder='80' name='port' id={index} onInput={formHandle}/>
+                        <Input placeholder='80' name='port' id={index} onInput={subHandle}/>
                     </Form.Item>
                 </Col>
 
@@ -57,25 +57,28 @@ function RenderModal(visible, setVisible, nameSpace) {
         ))
     }
 
+
+    function subHandle(e) {
+        let son = JSON.parse(JSON.stringify(formData))
+        son.paths[e.target.id][e.target.name] = e.target.value
+        setFormData(son)
+    }
+
     function formHandle(e) {
-        const dicInput = ["path", "svc_name", "port"]
-        let son = JSON.parse(JSON.stringify(formdata))
+
+        let son = JSON.parse(JSON.stringify(formData))
         if (e.type === "input") {
-            if (dicInput.indexOf(e.target.name) > -1) {
-                son.paths[e.target.id][e.target.name] = e.target.value
-            } else {
-                son[e.target.name] = e.target.value
-            }
+            son[e.target.name] = e.target.value
         } else {
             son["namespace"] = e
         }
-        setformdata(son)
+        setFormData(son)
     }
 
     function handleOk(e) {
         setVisible(false)
         const url = "http://127.0.0.1:8080/api/v1/ingress"
-        axios.post(url, formdata).then(response => {
+        axios.post(url, formData).then(response => {
             console.log(response.data)
         }).catch((error) => {
             console.log(error)
@@ -94,14 +97,14 @@ function RenderModal(visible, setVisible, nameSpace) {
                 <Row gutter={32}>
                     <Col span={10}>
                         <Form.Item label='名称'>
-                            <Input name='name' onInput={formHandle} value={formdata.name}
+                            <Input name='name' onInput={formHandle} value={formData.name}
                                    placeholder="ingress名称"/>
                         </Form.Item>
                     </Col>
 
                     <Col span={10}>
                         <Form.Item label='名称空间'>
-                            <Select name='namespace' onChange={formHandle} value={formdata.namespace}>
+                            <Select name='namespace' onChange={formHandle} value={formData.namespace}>
                                 {selectNS(nameSpace)}
                             </Select>
                         </Form.Item>
@@ -110,7 +113,7 @@ function RenderModal(visible, setVisible, nameSpace) {
                 <Row gutter={32}>
                     <Col span={8}>
                         <Form.Item label='域名'>
-                            <Input name='host' onInput={formHandle} value={formdata.host} placeholder='填写域名'/>
+                            <Input name='host' onChange={formHandle} value={formData.host} placeholder='填写域名'/>
                         </Form.Item>
                     </Col>
                     <Col span={8}>

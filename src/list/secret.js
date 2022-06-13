@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 
 import axios from "axios";
-import {selectNS, sideBar, loading} from "../components/common";
+import {loading, selectNS, sideBar} from "../components/common";
 import {Content} from "antd/es/layout/layout";
-import {Button, Col,  Form, Input, Layout, Modal, PageHeader, Row, Select, Table} from "antd";
+import {Button, Col, Form, Input, Layout, Modal, PageHeader, Row, Select, Table} from "antd";
 
 export default function Secret(props) {
 
@@ -140,9 +140,10 @@ export default function Secret(props) {
     }
 
 
-    return (<Layout>
-        {sideBar()}
-        {renderContent()}
-        {renderModal()}
-    </Layout>)
+    return (
+        <Layout>
+            {sideBar()}
+            {renderContent()}
+            {renderModal()}
+        </Layout>)
 }
