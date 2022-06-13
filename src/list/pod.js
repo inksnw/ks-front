@@ -10,7 +10,6 @@ export default function Pods(props) {
 
     const [data, setdata] = useState([]);
     const [isLoading, setisLoading] = useState(false);
-    const [requested, setrequested] = useState(false);
     const [logVisible, setLogVisible] = useState(false);
     const [ShellVisible, setShellVisible] = useState(false);
     const [podName, setPodName] = useState("");
@@ -31,22 +30,15 @@ export default function Pods(props) {
             console.log(error)
             setisLoading(false)
         })
-        setrequested(true)
     }
 
+//todo ws消息传递给content组件就可以了
     useEffect(() => {
-
-        if (!requested) {
-            fetch("");
-        }
-
+        fetch("");
         if (Object.keys(props.updateMsg).length !== 0) {
-            // const obj = JSON.parse(props.deployList);
-            // setdata(obj.items)
             fetch("");
         }
-
-    }, [props, requested]);
+    }, [props, data.items]);
 
     const handleTableChange = (pagination, filters, sorter) => {
 
@@ -92,6 +84,8 @@ export default function Pods(props) {
         )
     }
 
+
+    console.log("渲染render")
 
     return (
         <Layout>

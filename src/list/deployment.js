@@ -8,7 +8,6 @@ export default function Deployments(props) {
 
     const [data, setdata] = useState([]);
     const [isLoading, setisLoading] = useState(false);
-    const [requested, setrequested] = useState(false);
 
     function fetch(ns) {
 
@@ -26,7 +25,6 @@ export default function Deployments(props) {
             console.log(error)
             setisLoading(false)
         })
-        setrequested(true)
     }
 
     const handleTableChange = (pagination, filters, sorter) => {
@@ -34,15 +32,11 @@ export default function Deployments(props) {
     }
 
     useEffect(() => {
-        if (!requested) {
-            fetch("");
-        }
-
+        fetch("");
         if (Object.keys(props.updateMsg).length !== 0) {
             fetch("");
         }
-
-    }, [props, requested]);
+    }, [props, data.items]);
 
 
     const renderContent = () => {

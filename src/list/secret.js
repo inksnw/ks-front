@@ -9,7 +9,6 @@ export default function Secret(props) {
 
     const [data, setdata] = useState([]);
     const [isLoading, setisLoading] = useState(false);
-    const [requested, setrequested] = useState(false);
     const [visible, setVisible] = useState(false);
     const [formdata, setformdata] = useState({
         name: "", key: "", namespace: "", value: ""
@@ -32,20 +31,14 @@ export default function Secret(props) {
             console.log(error)
             setisLoading(false)
         })
-        setrequested(true)
     }
 
     useEffect(() => {
-
-        if (!requested) {
-            fetch("");
-        }
-
+        fetch("");
         if (Object.keys(props.updateMsg).length !== 0) {
             fetch("");
         }
-
-    }, [props, requested]);
+    }, [props, data.items]);
 
     const handleTableChange = (pagination, filters, sorter) => {
 

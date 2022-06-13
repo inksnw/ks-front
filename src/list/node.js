@@ -9,7 +9,6 @@ export default function Node(props) {
 
     const [data, setdata] = useState([]);
     const [isLoading, setisLoading] = useState(false);
-    const [requested, setrequested] = useState(false);
     const [ShellVisible, setShellVisible] = useState(false);
 
     function fetch(ns) {
@@ -22,16 +21,15 @@ export default function Node(props) {
             console.log(error)
             setisLoading(false)
         })
-        setrequested(true)
     }
 
 
     useEffect(() => {
-        if (!requested) {
+        fetch("");
+        if (Object.keys(props.updateMsg).length !== 0) {
             fetch("");
         }
-
-    }, [props, requested]);
+    }, [props, data.items]);
 
 
     const renderContent = () => {

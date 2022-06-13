@@ -10,7 +10,6 @@ export default function Role(props) {
 
     const [data, setdata] = useState([]);
     const [isLoading, setisLoading] = useState(false);
-    const [requested, setrequested] = useState(false);
 
     function fetch(ns) {
         let url = ""
@@ -27,22 +26,14 @@ export default function Role(props) {
             console.log(error)
             setisLoading(false)
         })
-        setrequested(true)
     }
 
     useEffect(() => {
-
-        if (!requested) {
-            fetch("");
-        }
-
+        fetch("");
         if (Object.keys(props.updateMsg).length !== 0) {
-            // const obj = JSON.parse(props.deployList);
-            // setdata(obj.items)
             fetch("");
         }
-
-    }, [props, requested]);
+    }, [props, data.items]);
 
     const handleTableChange = (pagination, filters, sorter) => {
 

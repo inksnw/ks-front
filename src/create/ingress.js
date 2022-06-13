@@ -104,7 +104,7 @@ function RenderModal(visible, setVisible, nameSpace) {
 
                     <Col span={10}>
                         <Form.Item label='名称空间'>
-                            <Select name='namespace' onChange={formHandle} value={formData.namespace}>
+                            <Select name='namespace' onSelect={formHandle} value={formData.namespace}>
                                 {selectNS(nameSpace)}
                             </Select>
                         </Form.Item>
@@ -113,7 +113,7 @@ function RenderModal(visible, setVisible, nameSpace) {
                 <Row gutter={32}>
                     <Col span={8}>
                         <Form.Item label='域名'>
-                            <Input name='host' onChange={formHandle} value={formData.host} placeholder='填写域名'/>
+                            <Input name='host' onInput={formHandle} value={formData.host} placeholder='填写域名'/>
                         </Form.Item>
                     </Col>
                     <Col span={8}>

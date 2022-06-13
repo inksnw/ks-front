@@ -14,7 +14,6 @@ export default function Ingress(props) {
 
     const [data, setdata] = useState([]);
     const [isLoading, setisLoading] = useState(false);
-    const [requested, setrequested] = useState(false);
     const [visible, setVisible] = useState(false);
 
 
@@ -37,7 +36,6 @@ export default function Ingress(props) {
             console.log(error)
             setisLoading(false)
         })
-        setrequested(true)
     }
 
     const handleTableChange = (pagination, filters, sorter) => {
@@ -67,16 +65,11 @@ export default function Ingress(props) {
     }
 
     useEffect(() => {
-        if (!requested) {
-            fetch("");
-        }
-
+        fetch("");
         if (Object.keys(props.updateMsg).length !== 0) {
-            console.log("接到消息", props.updateMsg)
             fetch("");
         }
-
-    }, [props, requested]);
+    }, [props, data.items]);
 
 
     const renderContent = () => {
