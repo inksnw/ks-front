@@ -1,5 +1,5 @@
 import {Button, Layout, PageHeader, Table} from "antd";
-import {loading, sideBar} from "../components/common";
+import {loading, SideBar} from "../components/common";
 import React, {useEffect, useState} from "react";
 import {Content} from "antd/es/layout/layout";
 import axios from "axios";
@@ -26,10 +26,7 @@ export default function Node(props) {
 
     useEffect(() => {
         fetch("");
-        if (Object.keys(props.updateMsg).length !== 0) {
-            fetch("");
-        }
-    }, [props, data.items]);
+    }, [data.items]);
 
 
     const renderContent = () => {
@@ -71,7 +68,7 @@ export default function Node(props) {
 
     return (
         <Layout>
-            {sideBar()}
+            <SideBar/>
             {renderContent()}
             {renderShellModal(ShellVisible, setShellVisible, 'ws://localhost:8080/nodeshell')}
         </Layout>)

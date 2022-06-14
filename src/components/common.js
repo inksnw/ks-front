@@ -13,20 +13,28 @@ function getItem(label, children) {
     };
 }
 
-function sideBar() {
-    const items = [
-        getItem(<Link to="/pods"> pods </Link>),
-        getItem(<Link to="/deployments"> deployment </Link>),
-        getItem(<Link to="/ingress"> ingress </Link>),
-        getItem(<Link to="/secret"> Secret </Link>),
-        getItem(<Link to="/node"> Node </Link>),
-        getItem(<Link to="/role"> Role </Link>)
-    ];
-    return (
-        <Sider width={150}>
-            <Menu mode="inline" className="sidebar" items={items}/>
-        </Sider>
-    );
+class SideBar extends React.Component {
+
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        return false
+    }
+
+    render() {
+        const items = [
+            getItem(<Link to="/pods"> pods </Link>),
+            getItem(<Link to="/deployments"> deployment </Link>),
+            getItem(<Link to="/ingress"> ingress </Link>),
+            getItem(<Link to="/secret"> Secret </Link>),
+            getItem(<Link to="/node"> Node </Link>),
+            getItem(<Link to="/role"> Role </Link>)
+        ]
+
+        return (
+            <Sider width={150}>
+                <Menu mode="inline" className="sidebar" items={items}/>
+            </Sider>
+        );
+    }
 }
 
 
@@ -45,4 +53,4 @@ function selectNS(nameSpace) {
 }
 
 
-export {getItem, sideBar, loading, selectNS}
+export {getItem, SideBar, loading, selectNS}

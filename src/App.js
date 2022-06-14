@@ -64,7 +64,6 @@ class App extends React.Component {
                 return
             }
             console.log("接到ws消息: ", evt.data)
-            // const obj = JSON.parse(props.deployList);
             this.setState(
                 {
                     data: evt.data,
@@ -80,6 +79,7 @@ class App extends React.Component {
         this.getNs()
 
         return (
+
             <Router>
                 <Routes>
                     <Route path="/" element={<Pods updateMsg={this.state.data} ns={this.state.ns}/>}/>

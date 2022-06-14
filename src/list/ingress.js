@@ -1,5 +1,5 @@
 import {Button, Divider, Layout, notification, PageHeader, Space, Table} from "antd";
-import {loading, sideBar} from "../components/common";
+import {loading, SideBar} from "../components/common";
 import React, {useEffect, useState} from "react";
 import {Content} from "antd/es/layout/layout";
 import axios from "axios";
@@ -116,7 +116,7 @@ export default function Ingress(props) {
     }
     return (
         <Layout>
-            {sideBar()}
+            <SideBar/>
             {renderContent()}
             {RenderModal(visible, setVisible, props.ns)}
         </Layout>)

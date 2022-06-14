@@ -1,9 +1,8 @@
-import {Button,  Layout, PageHeader, Table} from "antd";
-import { sideBar, loading} from "../components/common";
+import {Button, Layout, PageHeader, Table} from "antd";
+import {loading, SideBar} from "../components/common";
 import React, {useEffect, useState} from "react";
 import {Content} from "antd/es/layout/layout";
 import axios from "axios";
-
 
 
 export default function Role(props) {
@@ -50,7 +49,7 @@ export default function Role(props) {
                 },
             },
             {
-                title: '名称空间', dataIndex: 'name_space', filters:   props.ns, filterMultiple: false, sorter: true
+                title: '名称空间', dataIndex: 'name_space', filters: props.ns, filterMultiple: false, sorter: true
             },
             {title: '创建时间', dataIndex: 'create_time'},
         ];
@@ -68,8 +67,10 @@ export default function Role(props) {
     }
 
 
-    return (<Layout>
-        {sideBar()}
-        {renderContent()}
-    </Layout>)
+    return (
+        <Layout>
+            <SideBar/>
+            {renderContent()}
+        </Layout>
+    )
 }
