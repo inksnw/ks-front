@@ -2,56 +2,40 @@ import {Button, Layout, PageHeader, Table} from "antd";
 import {loading, SideBar} from "../components/common";
 import React, {useEffect, useState} from "react";
 import {Content} from "antd/es/layout/layout";
-import axios from "axios";
 
+import {fetch} from "../components/request"
 
 export default function Role(props) {
 
     const [data, setdata] = useState([]);
     const [isLoading, setisLoading] = useState(false);
-
-    function fetch(ns) {
-        let url = ""
-        if (typeof (ns) === "undefined" || ns === null) {
-            url = 'http://127.0.0.1:8080/api/v1/role'
-        } else {
-            url = 'http://127.0.0.1:8080/api/v1/role?'.concat('ns=', ns)
+    const getObj = (item, index) => {
+        return {
+            name: item.metadata.name,
+            namespace: item.metadata.namespace,
+            creationTimestamp: item.metadata.creationTimestamp,
+            key: index
         }
-
-        axios.get(url).then(response => {
-            setdata(response.data.items)
-            setisLoading(true)
-        }).catch((error) => {
-            console.log(error)
-            setisLoading(false)
-        })
     }
 
     useEffect(() => {
-        fetch("");
+        fetch("", "roles", setdata, setisLoading, getObj);
         if (Object.keys(props.updateMsg).length !== 0) {
-            fetch("");
+            fetch("", "roles", setdata, setisLoading, getObj);
         }
     }, [props, data.items]);
 
     const handleTableChange = (pagination, filters, sorter) => {
-
-        fetch(filters.name_space);
+        fetch(filters.namespace, "roles", setdata, setisLoading);
     }
 
 
     const renderContent = () => {
 
         const columns = [
-            {
-                title: '名称', dataIndex: 'name', render: (text) => {
-                    return <a href={"logs"}>{text}</a>
-                },
-            },
-            {
-                title: '名称空间', dataIndex: 'name_space', filters: props.ns, filterMultiple: false, sorter: true
-            },
-            {title: '创建时间', dataIndex: 'create_time'},
+            {title: '名称', dataIndex: 'name'},
+            {title: '名称空间', dataIndex: 'namespace', filters: props.ns, filterMultiple: false},
+            {title: '创建时间', dataIndex: 'creationTimestamp'},
         ];
         if (!isLoading) {
             return loading()

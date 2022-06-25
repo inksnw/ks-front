@@ -4,6 +4,7 @@ import axios from "axios";
 import {loading, selectNS, SideBar} from "../components/common";
 import {Content} from "antd/es/layout/layout";
 import {Button, Col, Form, Input, Layout, Modal, PageHeader, Row, Select, Table} from "antd";
+import {fetch} from "../components/request"
 
 export default function Secret(props) {
 
@@ -16,33 +17,15 @@ export default function Secret(props) {
     });
 
 
-    function fetch(ns) {
-        let url = ""
-        if (typeof (ns) === "undefined" || ns === null) {
-            url = 'http://127.0.0.1:8080/api/v1/secret'
-        } else {
-            url = 'http://127.0.0.1:8080/api/v1/secret?'.concat('ns=', ns)
-        }
-
-        axios.get(url).then(response => {
-            setdata(response.data.items)
-            setisLoading(true)
-        }).catch((error) => {
-            console.log(error)
-            setisLoading(false)
-        })
-    }
-
     useEffect(() => {
-        fetch("");
+        fetch("", "secrets", setdata, setisLoading, getObj);
         if (Object.keys(props.updateMsg).length !== 0) {
-            fetch("");
+            fetch("", "secrets", setdata, setisLoading, getObj);
         }
     }, [props, data.items]);
 
     const handleTableChange = (pagination, filters, sorter) => {
-
-        fetch(filters.name_space);
+        fetch(filters.namespace, "secrets", setdata, setisLoading);
     }
 
     function handleOk(e) {
@@ -53,6 +36,16 @@ export default function Secret(props) {
         }).catch((error) => {
             console.log(error)
         })
+    }
+
+    const getObj = (item, index) => {
+        return {
+            name: item.metadata.name,
+            namespace: item.metadata.namespace,
+            creationTimestamp: item.metadata.creationTimestamp,
+            type: item.type,
+            key: index
+        }
     }
 
     function formHandle(e) {
@@ -111,13 +104,12 @@ export default function Secret(props) {
 
     const renderContent = () => {
 
-        const columns = [{
-            title: '名称', dataIndex: 'name', render: (text) => {
-                return <a href={"ss"}>{text}</a>
-            },
-        }, {
-            title: '名称空间', dataIndex: 'name_space', filters: props.ns, filterMultiple: false, sorter: true
-        },];
+        const columns = [
+            {title: '名称', dataIndex: 'name'},
+            {title: '名称空间', dataIndex: 'namespace', filters: props.ns, filterMultiple: false},
+            {title: '创建时间', dataIndex: 'creationTimestamp'},
+            {title: '类型', dataIndex: 'type'},
+        ];
         if (!isLoading) {
             return loading()
         }

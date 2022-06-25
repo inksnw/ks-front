@@ -2,63 +2,38 @@ import {Button, Layout, PageHeader, Table} from "antd";
 import {loading, SideBar} from "../components/common";
 import React, {useEffect, useState} from "react";
 import {Content} from "antd/es/layout/layout";
-import axios from "axios";
 import {renderShellModal} from "../components/shell";
+import {fetch} from "../components/request"
 
 export default function Node(props) {
 
     const [data, setdata] = useState([]);
     const [isLoading, setisLoading] = useState(false);
     const [ShellVisible, setShellVisible] = useState(false);
-
-    function fetch(ns) {
-        let url = 'http://127.0.0.1:8080/api/v1/nodes'
-
-        axios.get(url).then(response => {
-            const d = []
-            response.data.items.map((item, index) => {
-                console.log(item.metadata.name);
-                const obj = {
-                    name: item.metadata.name,
-                    cpu: item.status.capacity.cpu,
-                    memory: parseInt(item.status.capacity.memory) / 1000 / 1000,
-                    ip: item.status.addresses[0].address,
-                    key: index
-                }
-                d.push(obj)
-                return d
-            })
-            setdata(d)
-            setisLoading(true)
-        }).catch((error) => {
-            console.log(error)
-            setisLoading(false)
-        })
+    const getObj = (item, index) => {
+        return {
+            name: item.metadata.name,
+            creationTimestamp: item.metadata.creationTimestamp,
+            cpu: item.status.capacity.cpu,
+            memory: item.status.capacity.memory,
+            ip: item.status.addresses[0].address,
+            status: item.status.phase,
+            key: index
+        }
     }
 
-
     useEffect(() => {
-        fetch("");
+        fetch("", "nodes", setdata, setisLoading, getObj);
     }, [data.items]);
 
 
     const renderContent = () => {
 
         const columns = [
-                {
-                    title: '名称', dataIndex: 'name', render: (text) => {
-                        return <a href={"logs"}>{text}</a>
-                    },
-                },
-                {
-                    title: 'cpu', dataIndex: 'cpu'
-                },
-                {
-                    title: '内存', dataIndex: 'memory'
-                },
-                {
-                    title: 'IP', dataIndex: 'ip'
-                },
+                {title: '名称', dataIndex: 'name'},
+                {title: 'cpu', dataIndex: 'cpu'},
+                {title: '内存', dataIndex: 'memory'},
+                {title: 'IP', dataIndex: 'ip'},
                 {
                     title: '操作', dataIndex: 'xxx', render:
                         (e, record) => <div>

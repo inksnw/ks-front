@@ -2,52 +2,30 @@ import {Button, Layout, PageHeader, Table} from "antd";
 import {loading, SideBar} from "../components/common";
 import React, {useEffect, useState} from "react";
 import {Content} from "antd/es/layout/layout";
-import axios from "axios";
+import {fetch} from "../components/request"
 
 export default function Deployments(props) {
 
     const [data, setdata] = useState([]);
     const [isLoading, setisLoading] = useState(false);
 
-    function fetch(ns) {
-
-        let url = ""
-        if (typeof (ns) === "undefined" || ns === null) {
-            url = 'http://127.0.0.1:8080/apis/apps/v1/deployments?limit=3'
-        } else {
-            url = `http://127.0.0.1:8080/apis/apps/v1/namespaces/${ns}/deployments?limit=3`
-        }
-
-        axios.get(url).then(response => {
-            const d = []
-            response.data.items.map((item, index) => {
-                console.log(item.metadata.name);
-                const obj = {
-                    name: item.metadata.name,
-                    namespace: item.metadata.namespace,
-                    creationTimestamp: item.metadata.creationTimestamp,
-                    replicas: item.spec.replicas,
-                    key: index
-                }
-                d.push(obj)
-                return d
-            })
-            setdata(d)
-            setisLoading(true)
-        }).catch((error) => {
-            console.log(error)
-            setisLoading(false)
-        })
-    }
-
     const handleTableChange = (pagination, filters, sorter) => {
-        fetch(filters.name_space);
+        fetch(filters.namespace, "deployments", setdata, setisLoading);
+    }
+    const getObj = (item, index) => {
+        return {
+            name: item.metadata.name,
+            namespace: item.metadata.namespace,
+            creationTimestamp: item.metadata.creationTimestamp,
+            replicas:item.status.replicas,
+            key: index
+        }
     }
 
     useEffect(() => {
-        fetch("");
+        fetch("", "deployments", setdata, setisLoading,getObj);
         if (Object.keys(props.updateMsg).length !== 0) {
-            fetch("");
+            fetch("", "deployments", setdata, setisLoading,getObj);
         }
     }, [props, data.items]);
 
@@ -55,14 +33,10 @@ export default function Deployments(props) {
     const renderContent = () => {
 
         const columns = [
-            {
-                title: '名称', dataIndex: 'name', render: (text) => {
-                    return <a href={text}>{text}</a>
-                },
-            },
-            {title: '副本数', dataIndex: 'replicas'},
+            {title: '名称', dataIndex: 'name'},
             {title: '名称空间', dataIndex: 'namespace'},
             {title: '创建时间', dataIndex: 'creationTimestamp'},
+            {title: '副本数', dataIndex: 'replicas'},
         ];
         if (!isLoading) {
             return loading()

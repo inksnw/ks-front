@@ -4,6 +4,7 @@ import React, {useEffect, useState} from "react";
 import {Content} from "antd/es/layout/layout";
 import axios from "axios";
 import RenderModal from "../create/ingress";
+import {fetch} from "../components/request"
 
 
 const Context = React.createContext({
@@ -20,26 +21,8 @@ export default function Ingress(props) {
     const [api, contextHolder] = notification.useNotification();
 
 
-    function fetch(ns) {
-
-        let url
-        if (typeof (ns) === "undefined" || ns === null) {
-            url = 'http://127.0.0.1:8080/api/v1/ingress'
-        } else {
-            url = 'http://127.0.0.1:8080/api/v1/ingress?'.concat('ns=', ns)
-        }
-
-        axios.get(url).then(response => {
-            setdata(response.data.items)
-            setisLoading(true)
-        }).catch((error) => {
-            console.log(error)
-            setisLoading(false)
-        })
-    }
-
     const handleTableChange = (pagination, filters, sorter) => {
-        fetch(filters.name_space);
+        fetch(filters.namespace, "ingress", setdata, setisLoading);
     }
 
     function deleteIngress(record) {
@@ -63,28 +46,29 @@ export default function Ingress(props) {
         })
 
     }
+    const getObj = (item, index) => {
+        return {
+            name: item.metadata.name,
+            namespace: item.metadata.namespace,
+            creationTimestamp: item.metadata.creationTimestamp,
+            status: item.status.phase,
+            key: index
+        }
+    }
 
     useEffect(() => {
-        fetch("");
+        fetch("", "ingress", setdata, setisLoading,getObj);
         if (Object.keys(props.updateMsg).length !== 0) {
-            fetch("");
+            fetch("", "ingress", setdata, setisLoading,getObj);
         }
     }, [props, data.items]);
 
 
     const renderContent = () => {
         const columns = [
-            {
-                title: '名称', dataIndex: 'name', render: (text) => {
-                    return <a href={text}>{text}</a>
-                },
-            },
-            {
-                title: '名称空间', dataIndex: 'namespace', filters: props.ns, filterMultiple: false, sorter: true
-            },
-            {
-                title: 'Host', dataIndex: 'host'
-            },
+            {title: '名称', dataIndex: 'name'},
+            {title: '名称空间', dataIndex: 'namespace', filters: props.ns, filterMultiple: false},
+            {title: 'Host', dataIndex: 'host'},
             {title: '创建时间', dataIndex: 'create_time'},
             {
                 title: '操作', dataIndex: 'xxx', render: (e, record) =>

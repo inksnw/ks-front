@@ -2,7 +2,7 @@ import {Button, Layout, PageHeader, Table} from "antd";
 import {loading, SideBar} from "../components/common";
 import React, {useEffect, useState} from "react";
 import {Content} from "antd/es/layout/layout";
-import axios from "axios";
+import {fetch} from "../components/request"
 import {RenderLogModal} from "../components/log";
 import {renderShellModal} from "../components/shell";
 
@@ -15,69 +15,39 @@ export default function Pods(props) {
     const [podName, setPodName] = useState("");
     const [ns, setns] = useState("");
 
-    function fetch(ns) {
-        let url = ""
-        if (typeof (ns) === "undefined" || ns === null || ns === "") {
-            url = 'http://127.0.0.1:8080/api/v1/pods?limit=2'
-        } else {
-            url = `http://127.0.0.1:8080/api/v1/namespaces/${ns}/pods?`
+    const getObj = (item, index) => {
+        return {
+            name: item.metadata.name,
+            namespace: item.metadata.namespace,
+            creationTimestamp: item.metadata.creationTimestamp,
+            status: item.status.phase,
+            key: index
         }
-
-        axios.get(url).then(response => {
-            const d = []
-            response.data.items.map((item, index) => {
-                console.log(item.metadata.name);
-                const obj = {
-                    name: item.metadata.name,
-                    namespace: item.metadata.namespace,
-                    creationTimestamp: item.metadata.creationTimestamp,
-                    status: item.status.phase,
-                    key: index
-                }
-                d.push(obj)
-                return d
-            })
-            setdata(d)
-            setisLoading(true)
-        }).catch((error) => {
-            console.log(error)
-            setisLoading(false)
-        })
     }
 
-
     useEffect(() => {
-        fetch("");
+        fetch("", "pods", setdata, setisLoading, getObj);
         if (Object.keys(props.updateMsg).length !== 0) {
-            fetch("");
+            fetch("", "pods", setdata, setisLoading, getObj);
         }
     }, [props, data.items]);
 
     const handleTableChange = (pagination, filters, sorter) => {
-
-        fetch(filters.name_space);
+        fetch(filters.namespace, "pods", setdata, setisLoading, getObj);
     }
     const showModal = (record) => {
         setLogVisible(true)
         setPodName(record.name)
-        setns(record.name_space)
+        setns(record.namespace)
     }
 
     const renderContent = () => {
 
         const columns = [
-            {
-                title: '名称', dataIndex: 'name',
-            },
-            {
-                title: '名称空间', dataIndex: 'namespace', filters: props.ns, filterMultiple: false, sorter: true
-            },
-            {
-                title: '创建时间', dataIndex: 'creationTimestamp',
-            },
-            {
-                title: '状态', dataIndex: 'status',
-            },
+            {title: '名称', dataIndex: 'name',},
+            {title: '名称空间', dataIndex: 'namespace', filters: props.ns, filterMultiple: false},
+            {title: '创建时间', dataIndex: 'creationTimestamp'},
+            {title: '状态', dataIndex: 'status'},
             {
                 title: '操作', dataIndex: 'xxx', render: (e, record) =>
                     <div>
