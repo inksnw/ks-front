@@ -2,12 +2,12 @@ import React from 'react';
 import 'antd/dist/antd.min.css';
 import './css/index.css';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import Deployments from "./list/deployment";
-import Pods from "./list/pod";
-import Ingress from "./list/ingress";
-import Secret from "./list/secret";
-import Node from "./list/node";
-import Role from "./list/role";
+import Deployments from "./pages/deployment";
+import Pods from "./pages/pod";
+import Ingress from "./pages/ingress";
+import Secret from "./pages/secret";
+import Node from "./pages/node";
+import Role from "./pages/role";
 import axios from "axios";
 
 
@@ -29,7 +29,7 @@ class App extends React.Component {
         let rv = []
         axios.get(url).then(response => {
             for (const rvKey in response.data.items) {
-                let key = response.data.items[rvKey].name
+                let key = response.data.items[rvKey].metadata.name
                 rv.push({value: key, text: key})
             }
             this.setState(
@@ -55,7 +55,7 @@ class App extends React.Component {
             return
         }
 
-        const conn = new WebSocket("ws://127.0.0.1:8080/ws");
+        const conn = new WebSocket("ws://127.0.0.1:8080/kapis/ws");
         conn.onclose = function (evt) {
             console.log('关闭连接');
         }

@@ -13,13 +13,26 @@ export default function Deployments(props) {
 
         let url = ""
         if (typeof (ns) === "undefined" || ns === null) {
-            url = 'http://127.0.0.1:8080/api/v1/deployments'
+            url = 'http://127.0.0.1:8080/apis/apps/v1/deployments?limit=3'
         } else {
-            url = 'http://127.0.0.1:8080/api/v1/deployments?'.concat('ns=', ns)
+            url = `http://127.0.0.1:8080/apis/apps/v1/namespaces/${ns}/deployments?limit=3`
         }
 
         axios.get(url).then(response => {
-            setdata(response.data.items)
+            const d = []
+            response.data.items.map((item, index) => {
+                console.log(item.metadata.name);
+                const obj = {
+                    name: item.metadata.name,
+                    namespace: item.metadata.namespace,
+                    creationTimestamp: item.metadata.creationTimestamp,
+                    replicas: item.spec.replicas,
+                    key: index
+                }
+                d.push(obj)
+                return d
+            })
+            setdata(d)
             setisLoading(true)
         }).catch((error) => {
             console.log(error)
@@ -47,13 +60,9 @@ export default function Deployments(props) {
                     return <a href={text}>{text}</a>
                 },
             },
-            {title: '名称空间', dataIndex: 'name_space', filters: props.ns, filterMultiple: false, sorter: true},
             {title: '副本数', dataIndex: 'replicas'},
-            {title: '镜像', dataIndex: 'images'},
-            {title: '是否完成', dataIndex: 'is_complete'},
-            {title: 'Message', dataIndex: 'message'},
-            {title: '创建时间', dataIndex: 'create_time'},
-
+            {title: '名称空间', dataIndex: 'namespace'},
+            {title: '创建时间', dataIndex: 'creationTimestamp'},
         ];
         if (!isLoading) {
             return loading()

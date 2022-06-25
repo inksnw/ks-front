@@ -18,13 +18,26 @@ export default function Pods(props) {
     function fetch(ns) {
         let url = ""
         if (typeof (ns) === "undefined" || ns === null || ns === "") {
-            url = 'http://127.0.0.1:8080/api/v1/pods'
+            url = 'http://127.0.0.1:8080/api/v1/pods?limit=2'
         } else {
             url = `http://127.0.0.1:8080/api/v1/namespaces/${ns}/pods?`
         }
 
         axios.get(url).then(response => {
-            setdata(response.data.items)
+            const d = []
+            response.data.items.map((item, index) => {
+                console.log(item.metadata.name);
+                const obj = {
+                    name: item.metadata.name,
+                    namespace: item.metadata.namespace,
+                    creationTimestamp: item.metadata.creationTimestamp,
+                    status: item.status.phase,
+                    key: index
+                }
+                d.push(obj)
+                return d
+            })
+            setdata(d)
             setisLoading(true)
         }).catch((error) => {
             console.log(error)
@@ -32,7 +45,7 @@ export default function Pods(props) {
         })
     }
 
-//todo ws消息传递给content组件就可以了
+
     useEffect(() => {
         fetch("");
         if (Object.keys(props.updateMsg).length !== 0) {
@@ -51,20 +64,20 @@ export default function Pods(props) {
     }
 
     const renderContent = () => {
+
         const columns = [
             {
-                title: '名称', dataIndex: 'name', render: (text) => {
-                    return <a href={"logs"}>{text}</a>
-                },
+                title: '名称', dataIndex: 'name',
             },
             {
-                title: '名称空间', dataIndex: 'name_space', filters: props.ns, filterMultiple: false, sorter: true
+                title: '名称空间', dataIndex: 'namespace', filters: props.ns, filterMultiple: false, sorter: true
             },
-            {title: '镜像', dataIndex: 'images', width: "20"},
-            {title: 'node_name', dataIndex: 'node_name'},
-            {title: 'IP', dataIndex: 'IP'},
-            {title: '状态', dataIndex: 'phase'},
-            {title: '创建时间', dataIndex: 'create_time'},
+            {
+                title: '创建时间', dataIndex: 'creationTimestamp',
+            },
+            {
+                title: '状态', dataIndex: 'status',
+            },
             {
                 title: '操作', dataIndex: 'xxx', render: (e, record) =>
                     <div>
