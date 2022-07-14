@@ -2,7 +2,7 @@ import React from 'react';
 import 'antd/dist/antd.min.css';
 import './css/index.css';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import Deployments from "./pages/deployment";
+import Deployments from "./pages/clusters/containers/Deployments";
 import Pods from "./pages/pod";
 import Ingress from "./pages/ingress";
 import Secret from "./pages/secret";
