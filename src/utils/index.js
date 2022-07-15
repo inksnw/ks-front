@@ -38,6 +38,8 @@ import generate from 'nanoid/generate'
 import moment from 'moment-mini'
 
 import {MODULE_KIND_MAP, PATTERN_LABEL} from './constants'
+import request from "./request";
+import globals from "globals";
 
 /**
  * format size, output the value with unit

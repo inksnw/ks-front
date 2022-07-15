@@ -1,3 +1,3 @@
-import request from 'utils/request'
-
-window.request = request
+// import request from 'utils/request'
+//
+// window.request = request

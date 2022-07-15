@@ -1,6 +1,7 @@
 import {action} from 'mobx'
 import Base from '../base'
 import request from 'utils/request'
+import { getHpaFormattedData } from 'utils/workload'
 
 export default class HpaStore extends Base {
     module = 'horizontalpodautoscalers'

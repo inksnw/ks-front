@@ -2,6 +2,7 @@ import React from 'react'
 import {inject, observer} from 'mobx-react'
 import {isEmpty} from 'lodash'
 import {toJS} from "mobx";
+import {trigger} from 'utils/action'
 
 export function withClusterList(options) {
     return withList({injectStores: ['rootStore', 'clusterStore'], ...options})
