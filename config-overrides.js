@@ -6,6 +6,6 @@ module.exports = override(
 )
 
 function fsPatch(config, env) {
-    config.resolve.fallback = {"path": require.resolve("path-browserify"), "fs": false}
+    config.resolve.fallback = {'path': require.resolve("path-browserify"), 'fs': false}
     return config;
 }

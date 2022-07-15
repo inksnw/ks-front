@@ -291,14 +291,14 @@ export default class BaseStore {
         let result
         let ksVersion
         const configVersion = get(
-            globals.clusterConfig,
+            window.globals.clusterConfig,
             `${params.cluster}.ksVersion`,
             ''
         )
         if (configVersion !== '') {
             ksVersion = configVersion.replace(/[^\d.]/g, '')
         } else {
-            if (globals.ksConfig.multicluster) {
+            if (window.globals.ksConfig.multicluster) {
                 result = await request.get(`/kapis/clusters/${params.cluster}/version`)
             } else {
                 result = await request.get(`/kapis/version`)

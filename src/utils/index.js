@@ -425,12 +425,12 @@ export const getWebSocketProtocol = protocol => {
 export const getWebsiteUrl = () => {
     const useLang = get(globals, 'user.lang', 'en')
     const lang = useLang === 'zh' ? 'zh' : 'en'
-    return globals.config.documents[lang]
+    return window.globals.config.documents[lang]
 }
 
 export const getDocsUrl = module => {
     const {url: prefix} = getWebsiteUrl()
-    const docUrl = get(globals.config, `resourceDocs[${module}]`, '')
+    const docUrl = get(window.globals.config, `resourceDocs[${module}]`, '')
 
     if (!docUrl) {
         return ''
@@ -568,7 +568,7 @@ export const getClusterUrl = url => {
     const match = requestURL.match(reg)
 
     if (match && match.length === 5) {
-        requestURL = globals.app.isMultiCluster
+        requestURL = window.globals.app.isMultiCluster
             ? `/${match[1]}/${match[3].replace('klusters', 'clusters')}/${match[2]}/${
                 match[4]
             }`
@@ -733,7 +733,7 @@ const accessModeMapper = {
 }
 
 export const gpuLimitsArr = objData => {
-    const supportGpu = globals.config.supportGpuType
+    const supportGpu = window.globals.config.supportGpuType
     const gpusObj = pickBy(objData, (_, key) =>
         supportGpu.some(type => endsWith(key, type))
     )
@@ -746,7 +746,7 @@ export const map_accessModes = accessModes =>
 export const quota_limits_requests_Dot = deal_With_Dot
 
 export const inCluster2Default = name => {
-    const clusterName = globals.hostClusterName || 'default'
+    const clusterName = window.globals.hostClusterName || 'default'
     return name === 'in-cluster' ? clusterName : name
 }
 

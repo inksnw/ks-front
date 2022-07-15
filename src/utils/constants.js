@@ -1113,7 +1113,7 @@ export const DEFAULT_CLUSTER = {
     labels: {
       'cluster.kubesphere.io/visibility': 'public',
     },
-    name: globals?.config?.defaultClusterName || 'default',
+    name:  window.globals?.config?.defaultClusterName || 'default',
   },
 }
 

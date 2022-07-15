@@ -91,7 +91,7 @@ function buildRequest({
             set(
                 params,
                 'metadata.annotations["kubesphere.io/creator"]',
-                globals.user.username
+                window.globals.user.username
             )
         }
         request.body = JSON.stringify(params)

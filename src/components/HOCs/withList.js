@@ -69,7 +69,7 @@ function withList(options) {
             }
 
             get enabledActions() {
-                return globals.app.getActions({
+                return window.globals.app.getActions({
                     module: this.authKey,
                     ...this.props.match.params,
                     project: this.props.match.params.namespace,
