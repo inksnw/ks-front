@@ -3,13 +3,17 @@ import {inject, observer} from 'mobx-react'
 import {isEmpty} from 'lodash'
 import {toJS} from "mobx";
 
+export function withClusterList(options) {
+    return withList({injectStores: ['rootStore', 'clusterStore'], ...options})
+}
+
 export class ListPage extends React.Component {
     render() {
         return this.props.children
     }
 }
 
-export default  function withList(options) {
+function withList(options) {
     return WrappedComponent => {
         const ObserverComponent = observer(WrappedComponent)
 

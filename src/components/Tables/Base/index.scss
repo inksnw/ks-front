@@ -21,6 +21,7 @@
     & > thead > tr > th {
       a {
         color: #79879c;
+
         &:hover {
           color: #79879c;
         }
@@ -35,9 +36,11 @@
 
 .cancelSelect {
   color: #fff;
+
   &:hover {
     background-color: $dark-color06;
   }
+
   &:active {
     background-color: $dark-color05;
   }
@@ -50,9 +53,11 @@
 
 .disableSearch {
   pointer-events: none !important;
+
   input {
     pointer-events: none !important;
   }
+
   user-select: none;
   opacity: 0.6;
 }

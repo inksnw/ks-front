@@ -17,15 +17,15 @@ export default function Deployments(props) {
             name: item.metadata.name,
             namespace: item.metadata.namespace,
             creationTimestamp: item.metadata.creationTimestamp,
-            replicas:item.status.replicas,
+            replicas: item.status.replicas,
             key: index
         }
     }
 
     useEffect(() => {
-        fetch("", "deployments", setdata, setisLoading,getObj);
+        fetch("", "deployments", setdata, setisLoading, getObj);
         if (Object.keys(props.updateMsg).length !== 0) {
-            fetch("", "deployments", setdata, setisLoading,getObj);
+            fetch("", "deployments", setdata, setisLoading, getObj);
         }
     }, [props, data.items]);
 

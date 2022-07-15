@@ -1,16 +1,14 @@
 import React from 'react'
-import withList, {ListPage} from "components/HOCs/withList";
+import {withClusterList,ListPage} from "components/HOCs/withList";
 import {ResourceTable} from "pages/clusters/components/ResourceTable";
 import WorkloadStore from 'stores/workload'
 
 
-withList({
-    injectStores: ['rootStore', 'clusterStore'], ...{
-        store: new WorkloadStore('deployments'),
-        module: 'deployments',
-        name: 'WORKLOAD',
-        rowKey: 'uid',
-    }
+@withClusterList({
+    store: new WorkloadStore('deployments'),
+    module: 'deployments',
+    name: 'WORKLOAD',
+    rowKey: 'uid',
 })
 
 

@@ -63,22 +63,28 @@
       &.white::before {
         background-color: $white;
       }
+
       &.default::before {
         background-color: $blue;
       }
+
       &.totals::before {
         background-color: $white;
         opacity: 0.4;
       }
+
       &.active::before {
         background-color: $green;
       }
+
       &.warn::before {
         background-color: $yellow;
       }
+
       &.danger::before {
         background-color: $red;
       }
+
       &.total::before {
         background-color: $light;
       }

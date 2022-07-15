@@ -46,6 +46,7 @@ export default function Ingress(props) {
         })
 
     }
+
     const getObj = (item, index) => {
         return {
             name: item.metadata.name,
@@ -57,9 +58,9 @@ export default function Ingress(props) {
     }
 
     useEffect(() => {
-        fetch("", "ingress", setdata, setisLoading,getObj);
+        fetch("", "ingress", setdata, setisLoading, getObj);
         if (Object.keys(props.updateMsg).length !== 0) {
-            fetch("", "ingress", setdata, setisLoading,getObj);
+            fetch("", "ingress", setdata, setisLoading, getObj);
         }
     }, [props, data.items]);
 
